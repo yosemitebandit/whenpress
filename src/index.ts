@@ -12,13 +12,20 @@
  */
 import { Hono } from 'hono'
 
-export interface Env {}
+export interface Env {
+	MyAI: any
+}
 
 const app = new Hono<{ Bindings: Env }>()
 
-app.get("/", c => {
-	// console.log(c.env.TEST);
-	return c.json({ hello: "there" })
+app.get("/", async c => {
+
+	const response = await c.env.MyAI.run(
+		"@cf/mistral/mistral-7b-instruct-v0.1",
+		{ prompt: "tell me a very unique and funny joke" }
+	);
+
+	return c.json(response)
 })
 
 export default app

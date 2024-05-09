@@ -18,11 +18,14 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>()
 
+// GET ?p=tell me a riddle and the answer too
 app.get("/", async c => {
+
+	const incomingPrompt = c.req.query("p") || 'tell me a joke'
 
 	const response = await c.env.MyAI.run(
 		"@cf/mistral/mistral-7b-instruct-v0.1",
-		{ prompt: "tell me a very unique and funny joke" }
+		{ prompt: incomingPrompt }
 	);
 
 	return c.json(response)

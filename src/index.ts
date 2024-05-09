@@ -12,11 +12,11 @@
  */
 import { Hono } from 'hono'
 
-export interface Env {
+type Bindings = {
 	MyAI: any
 }
 
-const app = new Hono<{ Bindings: Env }>()
+const app = new Hono<{ Bindings: Bindings }>()
 
 app.get("/", async c => {
 

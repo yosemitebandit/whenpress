@@ -5,14 +5,6 @@
 2. validate permissions via auth:sage -> password matches hashed version of posted pw
 3. append data by first fetching data:sage KV and then appending
 
-// send ping from device: POST whenpress.net/sage/ping
-1. see if that device exists, e.g. 'sage' in devices
-2. validate permissions via auth:sage -> password matches hashed version of posted pw
-3. register ping via ping:DEVICE1
-
-// create device
-1. do this via dashboard only (no methods to do this via the app)
-
 // KV schema:
 devices -> [DEVICE1, DEVICE2, DEVICE3, ..]
 auth:DEVICE1 -> PW1 (string)

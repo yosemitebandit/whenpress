@@ -47,6 +47,7 @@ const deviceTemplate = `
 		<h3>device: '{{ device }}'</h3>
 		<p>presses: {{ presses }}</p>
 		<p>last press: {{ lastPress }}</p>
+		<p>latest ping: {{ ping }}</p>
 	</body>
 </html>
 `;
@@ -72,15 +73,42 @@ app.get("/:device", async c => {
 		return c.text('not found', 404)
 	}
 	// TODO: lookup press data
-	const data = {
+	let data = {
 		device: device,
 		presses: 4,
 		lastPress: 123,
+		ping: '',
 	}
-	// TODO: lookup ping data.
+	// Lookup ping data.
+	const latestPing = await c.env.DB.get(`ping:${device}`)
+	if (latestPing != null) {
+		data.ping = latestPing
+	}
 	// Render.
 	const renderedHtml = mustache.render(deviceTemplate, data)
 	return c.html(renderedHtml)
+})
+
+app.post("/:device/ping", async c => {
+	/* Receive a device ping.
+	*/
+	const device = c.req.param('device')
+	// See if the device exists
+	const devices = await c.env.DB.get("devices")
+	if (devices == null) {
+		return c.text('error', 500)
+	}
+	const validDevices = JSON.parse(devices);
+	if (!validDevices.includes(device)) {
+		return c.text('not found', 404)
+	}
+	// TODO: authenticate
+	// Register the ping.
+	const now = Math.floor(Date.now() / 1000)
+	c.env.DB.put(`ping:${device}`, now.toString())
+	// Respond.
+	return c.text('pong')
+
 })
 
 app.get("/list", async c => {

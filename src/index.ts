@@ -33,6 +33,7 @@ ping:DEVICE1 -> UTC timestamp (string; int compatible)
  */
 import { Hono } from 'hono'
 import mustache from 'mustache'
+import moment from 'moment'
 
 type Bindings = {
 	DB: KVNamespace,
@@ -82,7 +83,9 @@ app.get("/:device", async c => {
 	// Lookup ping data.
 	const latestPing = await c.env.DB.get(`ping:${device}`)
 	if (latestPing != null) {
-		data.ping = latestPing
+		const pingTime = moment.unix(parseInt(latestPing, 10))
+		const timeAgo = moment(pingTime).fromNow()
+		data.ping = timeAgo
 	}
 	// Render.
 	const renderedHtml = mustache.render(deviceTemplate, data)

@@ -41,6 +41,15 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>()
 
+const homeTemplate = `
+<!doctype html>
+<html>
+	<body>
+		<h3>whenpress</h3>
+	</body>
+</html>
+`
+
 const deviceTemplate = `
 <!doctype html>
 <html>
@@ -54,10 +63,8 @@ const deviceTemplate = `
 `;
 
 app.get("/", async c => {
-	const devices = await c.env.DB.get("devices")
-	return devices
-	  ? c.text(devices)
-	  : c.text('not found', 404)
+	const renderedHtml = mustache.render(homeTemplate, {})
+	return c.html(renderedHtml)
 })
 
 app.get("/:device", async c => {

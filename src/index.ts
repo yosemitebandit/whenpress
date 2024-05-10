@@ -1,10 +1,4 @@
-/**
-
-// render page for a specific device: GET whenpress.net/lilac
-1. see if that device exists, e.g. 'lilac' in devices
-2. lookup that device via data:lilac -> data
-3. lookup latest ping via ping:lilac -> timestamp
-4. render all this info
+/*
 
 // send data from a specific device: POST whenpress.net/sage/data
 1. see if that device exists, e.g. 'sage' in devices
@@ -46,14 +40,13 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>()
 
-// could put templates in KV too
 const deviceTemplate = `
 <!doctype html>
 <html>
 	<body>
-		<h1>Device: '{{ device }}'</h1>
+		<h3>device: '{{ device }}'</h3>
 		<p>presses: {{ presses }}</p>
-		<p>lastPress: {{ lastPress }}</p>
+		<p>last press: {{ lastPress }}</p>
 	</body>
 </html>
 `;
@@ -66,12 +59,26 @@ app.get("/", async c => {
 })
 
 app.get("/:device", async c => {
+	/* Render page for a specific device.
+	*/
 	const device = c.req.param('device')
+	// See if the device exists
+	const devices = await c.env.DB.get("devices")
+	if (devices == null) {
+		return c.text('error', 500)
+	}
+	const validDevices = JSON.parse(devices);
+	if (!validDevices.includes(device)) {
+		return c.text('not found', 404)
+	}
+	// TODO: lookup press data
 	const data = {
 		device: device,
 		presses: 4,
 		lastPress: 123,
 	}
+	// TODO: lookup ping data.
+	// Render.
 	const renderedHtml = mustache.render(deviceTemplate, data)
 	return c.html(renderedHtml)
 })

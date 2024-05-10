@@ -55,6 +55,8 @@ const deviceTemplate = `
 `;
 
 app.get("/", async c => {
+	/* Render homepage.
+	*/
 	const renderedHtml = mustache.render(homeTemplate, {})
 	return c.html(renderedHtml)
 })

@@ -38,6 +38,7 @@ ping:DEVICE1 -> UTC timestamp (string; int compatible)
 
  */
 import { Hono } from 'hono'
+import mustache from 'mustache'
 
 type Bindings = {
 	DB: KVNamespace,
@@ -45,11 +46,34 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>()
 
+// could put templates in KV too
+const deviceTemplate = `
+<!doctype html>
+<html>
+	<body>
+		<h1>Device: '{{ device }}'</h1>
+		<p>presses: {{ presses }}</p>
+		<p>lastPress: {{ lastPress }}</p>
+	</body>
+</html>
+`;
+
 app.get("/", async c => {
 	const devices = await c.env.DB.get("devices")
 	return devices
 	  ? c.text(devices)
 	  : c.text('not found', 404)
+})
+
+app.get("/:device", async c => {
+	const device = c.req.param('device')
+	const data = {
+		device: device,
+		presses: 4,
+		lastPress: 123,
+	}
+	const renderedHtml = mustache.render(deviceTemplate, data)
+	return c.html(renderedHtml)
 })
 
 app.get("/list", async c => {

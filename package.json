@@ -17,6 +17,8 @@
     "wrangler": "^3.0.0"
   },
   "dependencies": {
-    "hono": "^4.3.3"
+    "@types/mustache": "^4.2.5",
+    "hono": "^4.3.3",
+    "mustache": "^4.2.0"
   }
 }

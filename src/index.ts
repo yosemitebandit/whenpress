@@ -115,9 +115,4 @@ app.post("/:device/ping", async c => {
 
 })
 
-app.get("/list", async c => {
-  const list = await c.env.DB.list()
-	return c.json({ keys: list.keys.map(k => k.name) })
-})
-
 export default app

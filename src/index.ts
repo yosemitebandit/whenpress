@@ -22,7 +22,8 @@ ping:DEVICE1 -> UTC timestamp (string; int compatible)
 	}]
 }
 
- */
+*/
+
 import { Hono } from 'hono'
 import mustache from 'mustache'
 import moment from 'moment'
@@ -52,7 +53,7 @@ const deviceTemplate = `
 		<p>latest ping: {{ ping }}</p>
 	</body>
 </html>
-`;
+`
 
 app.get("/", async c => {
 	/* Render homepage.
@@ -70,7 +71,7 @@ app.get("/:device", async c => {
 	if (devices == null) {
 		return c.text('error', 500)
 	}
-	const validDevices = JSON.parse(devices);
+	const validDevices = JSON.parse(devices)
 	if (!validDevices.includes(device)) {
 		return c.text('not found', 404)
 	}
@@ -102,7 +103,7 @@ app.post("/:device/ping", async c => {
 	if (devices == null) {
 		return c.text('error', 500)
 	}
-	const validDevices = JSON.parse(devices);
+	const validDevices = JSON.parse(devices)
 	if (!validDevices.includes(device)) {
 		return c.text('not found', 404)
 	}

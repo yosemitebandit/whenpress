@@ -5,7 +5,7 @@ import urequests
 import usocket
 
 led = Pin("D4", Pin.OUT)
-url = "https://whenpress.matt-ball-2.workers.dev/sage"
+url = "https://whenpress.matt-ball-2.workers.dev/sage/ping"
 headers = {"Content-Type": "application/json"}
 data = {}
 

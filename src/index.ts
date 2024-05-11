@@ -13,12 +13,12 @@ ping:DEVICE1 -> UTC timestamp (string; int compatible)
 
 // schema of values at data:DEVICEX (JSON)
 {
-  events: [{
-	  pressTimestamp: 12345,
+	events: [{
+		pressTimestamp: 12345,
 	}, {
-	  pressTimestamp: 12347,
+		pressTimestamp: 12347,
 	}, {
-	  pressTimestamp: 12360,
+		pressTimestamp: 12360,
 	}]
 }
 
@@ -110,10 +110,9 @@ app.post("/:device/ping", async c => {
 	// TODO: authenticate
 	// Register the ping.
 	const now = Math.floor(Date.now() / 1000)
-	c.env.DB.put(`ping:${device}`, now.toString())
+	await c.env.DB.put(`ping:${device}`, now.toString())
 	// Respond.
 	return c.text('pong')
-
 })
 
 export default app

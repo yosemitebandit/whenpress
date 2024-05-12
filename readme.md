@@ -9,3 +9,7 @@ e.g. if you're `put`ting a key into KV
 - getting started guide with all the right settings:
 https://cdn.sparkfun.com/assets/f/2/a/2/5/OEM__Digi__recommended_getting_started_guide_-_Xbee_Cellular1.pdf
 - have to put `urequests` in lib (also have to fix serf typo..need to submit a change against their repo)
+
+
+### kv
+- `await` everything

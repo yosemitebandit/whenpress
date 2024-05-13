@@ -115,4 +115,45 @@ app.post("/:device/ping", async c => {
 	return c.text('pong')
 })
 
+app.post("/:device/data", async c => {
+	/* Receive device data.
+	*/
+	const device = c.req.param('device')
+	// See if the device exists
+	const devices = await c.env.DB.get("devices")
+	if (devices == null) {
+		return c.text('error', 500)
+	}
+	const validDevices = JSON.parse(devices)
+	if (!validDevices.includes(device)) {
+		return c.text('not found', 404)
+	}
+	// TODO: authenticate
+	// Register the incoming data.
+	const postedData = await c.req.json()
+	if (!postedData.pressTimestamp) {
+		return c.text('error', 400)
+	}
+	// First get the existing data in the db.
+	let existingData = await c.env.DB.get(`data:${device}`)
+	let updatedData = {}
+	if (existingData == null) {
+		// Populate for the first time.
+		updatedData = {
+			events: [{
+				pressTimestamp: postedData.pressTimestamp
+			}]
+		}
+	} else {
+		// Append.
+		let jsonData = JSON.parse(existingData)
+		updatedData = {
+			events: [...jsonData.events, { pressTimestamp: postedData.pressTimestamp }]
+		}
+	}
+	await c.env.DB.put(`data:${device}`, JSON.stringify(updatedData))
+	// Respond.
+	return c.text('ok')
+})
+
 export default app

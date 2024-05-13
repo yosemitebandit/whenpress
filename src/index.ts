@@ -7,7 +7,7 @@ ping:DEVICE1 -> UTC timestamp (string; int compatible)
 
 */
 
-import { Hono } from 'hono'
+import { Context, Hono } from 'hono'
 import mustache from 'mustache'
 import moment from 'moment'
 
@@ -45,6 +45,15 @@ interface EventData {
 	pressTimestamp: number,
 }
 
+async function deviceExistsMiddleware(c: Context, next: () => Promise<void>) {
+	const device = c.req.param('device')
+	const devices = await c.env.DB.get('devices')
+	if ((devices == null) || !JSON.parse(devices).includes(device)) {
+		return c.text('not found', 404)
+	}
+	await next()
+}
+
 app.get("/", async c => {
 	/* Render homepage.
 	*/
@@ -52,19 +61,11 @@ app.get("/", async c => {
 	return c.html(renderedHtml)
 })
 
+app.use("/:device", deviceExistsMiddleware)
 app.get("/:device", async c => {
 	/* Render page for a specific device.
 	*/
 	const device = c.req.param('device')
-	// See if the device exists
-	const devices = await c.env.DB.get("devices")
-	if (devices == null) {
-		return c.text('error', 500)
-	}
-	const validDevices = JSON.parse(devices)
-	if (!validDevices.includes(device)) {
-		return c.text('not found', 404)
-	}
 	// Lookup data for the device.
 	let data = {
 		device: device,
@@ -94,19 +95,11 @@ app.get("/:device", async c => {
 	return c.html(renderedHtml)
 })
 
+app.use("/:device/ping", deviceExistsMiddleware)
 app.post("/:device/ping", async c => {
 	/* Receive a device ping.
 	*/
 	const device = c.req.param('device')
-	// See if the device exists
-	const devices = await c.env.DB.get("devices")
-	if (devices == null) {
-		return c.text('error', 500)
-	}
-	const validDevices = JSON.parse(devices)
-	if (!validDevices.includes(device)) {
-		return c.text('not found', 404)
-	}
 	// TODO: authenticate
 	// Register the ping.
 	const now = Math.floor(Date.now() / 1000)
@@ -115,19 +108,11 @@ app.post("/:device/ping", async c => {
 	return c.text('pong')
 })
 
+app.use("/:device/data", deviceExistsMiddleware)
 app.post("/:device/data", async c => {
 	/* Receive device data.
 	*/
 	const device = c.req.param('device')
-	// See if the device exists
-	const devices = await c.env.DB.get("devices")
-	if (devices == null) {
-		return c.text('error', 500)
-	}
-	const validDevices = JSON.parse(devices)
-	if (!validDevices.includes(device)) {
-		return c.text('not found', 404)
-	}
 	// TODO: authenticate
 	// Register the incoming data.
 	const postedData = await c.req.json()

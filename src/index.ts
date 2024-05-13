@@ -66,22 +66,20 @@ app.get("/:device", async c => {
 		return c.text('not found', 404)
 	}
 	// Lookup data for the device.
-	let data = {}
+	let data = {
+		device: device,
+		presses: 0,
+		lastPress: null as null | number,
+		ping: null as null | string,
+	}
 	let deviceData = await c.env.DB.get(`data:${device}`)
-	if (deviceData == null) {
-		data = {
-			device: device,
-			presses: 0,
-			lastPress: null,
-			ping: '',
-		}
-	} else {
+	if (deviceData != null) {
 		let jsonData: DeviceData = JSON.parse(deviceData)
 		data = {
 			device: device,
 			presses: jsonData.events.length,
 			lastPress: Math.max(...jsonData.events.map((event: EventData) => event.pressTimestamp)),
-			ping: '',
+			ping: null,
 		}
 	}
 	// Lookup and inject ping data.

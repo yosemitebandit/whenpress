@@ -1,26 +1,9 @@
 /*
-
-// send data from a specific device: POST whenpress.net/sage/data
-1. see if that device exists, e.g. 'sage' in devices
-2. validate permissions via auth:sage -> password matches hashed version of posted pw
-3. append data by first fetching data:sage KV and then appending
-
 // KV schema:
 devices -> [DEVICE1, DEVICE2, DEVICE3, ..]
 auth:DEVICE1 -> PW1 (string)
 data:DEVICE1 -> {DATA1} (json)
 ping:DEVICE1 -> UTC timestamp (string; int compatible)
-
-// schema of values at data:DEVICEX (JSON)
-{
-	events: [{
-		pressTimestamp: 12345,
-	}, {
-		pressTimestamp: 12347,
-	}, {
-		pressTimestamp: 12360,
-	}]
-}
 
 */
 

@@ -55,6 +55,13 @@ const deviceTemplate = `
 </html>
 `
 
+interface DeviceData {
+	events: EventData[];
+}
+interface EventData {
+	pressTimestamp: number,
+}
+
 app.get("/", async c => {
 	/* Render homepage.
 	*/
@@ -75,14 +82,26 @@ app.get("/:device", async c => {
 	if (!validDevices.includes(device)) {
 		return c.text('not found', 404)
 	}
-	// TODO: lookup press data
-	let data = {
-		device: device,
-		presses: 4,
-		lastPress: 123,
-		ping: '',
+	// Lookup data for the device.
+	let data = {}
+	let deviceData = await c.env.DB.get(`data:${device}`)
+	if (deviceData == null) {
+		data = {
+			device: device,
+			presses: 0,
+			lastPress: null,
+			ping: '',
+		}
+	} else {
+		let jsonData: DeviceData = JSON.parse(deviceData)
+		data = {
+			device: device,
+			presses: jsonData.events.length,
+			lastPress: Math.max(...jsonData.events.map((event: EventData) => event.pressTimestamp)),
+			ping: '',
+		}
 	}
-	// Lookup ping data.
+	// Lookup and inject ping data.
 	const latestPing = await c.env.DB.get(`ping:${device}`)
 	if (latestPing != null) {
 		const pingTime = moment.unix(parseInt(latestPing, 10))
@@ -136,7 +155,7 @@ app.post("/:device/data", async c => {
 	}
 	// First get the existing data in the db.
 	let existingData = await c.env.DB.get(`data:${device}`)
-	let updatedData = {}
+	let updatedData: DeviceData = { events: [] }
 	if (existingData == null) {
 		// Populate for the first time.
 		updatedData = {
@@ -146,7 +165,7 @@ app.post("/:device/data", async c => {
 		}
 	} else {
 		// Append.
-		let jsonData = JSON.parse(existingData)
+		let jsonData: DeviceData = JSON.parse(existingData)
 		updatedData = {
 			events: [...jsonData.events, { pressTimestamp: postedData.pressTimestamp }]
 		}

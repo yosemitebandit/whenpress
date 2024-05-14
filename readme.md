@@ -8,7 +8,8 @@ kv:key put \
 --binding=DB --local
 ```
 
-add auth - note the single quotes particularly around the hash
+add auth - generate the hash via `hashPassword.js`.
+When adding to kv, note the single quotes particularly around the hash,
 this prevents variable expansion in zsh, e.g. for the parts like `$2a`
 
 ```

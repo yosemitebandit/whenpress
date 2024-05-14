@@ -1,12 +1,3 @@
-/*
-// KV schema:
-devices -> [DEVICE1, DEVICE2, DEVICE3, ..]
-auth:DEVICE1 -> PW1 (string)
-data:DEVICE1 -> {DATA1} (json)
-ping:DEVICE1 -> UTC timestamp (string; int compatible)
-
-*/
-
 import { Context, Hono } from 'hono';
 import bcrypt from 'bcryptjs';
 import mustache from 'mustache';

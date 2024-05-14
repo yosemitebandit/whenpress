@@ -46,6 +46,13 @@ http://localhost:8787/epona/data
 visit `http://localhost:8787/epona` to see the latest data
 
 
+### kv schema
+- devices -> "[DEVICE1, DEVICE2, DEVICE3, ...]" (string, json-compatible)
+- auth:DEVICE1 -> "PW1" (string)
+- data:DEVICE1 -> "{DEVICEDATA1}" (string, json-compatible)
+- ping:DEVICE1 -> "UTC timestamp" (string; int compatible)
+
+
 ### xbee and micropython
 - seems that the module must be named `main.py` for it to autostart on an xbee
 - getting started guide with all the right settings:

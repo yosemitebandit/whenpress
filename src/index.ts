@@ -127,11 +127,11 @@ app.post("/:device/ping", async c => {
 })
 
 app.use("/:device/data", deviceExistsMiddleware)
+app.use("/:device/data", checkAuth)
 app.post("/:device/data", async c => {
 	/* Receive device data.
 	*/
 	const device = c.req.param('device')
-	// TODO: authenticate
 	// Register the incoming data.
 	const postedData = await c.req.json()
 	if (!postedData.pressTimestamp) {

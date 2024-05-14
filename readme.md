@@ -24,4 +24,5 @@ https://cdn.sparkfun.com/assets/f/2/a/2/5/OEM__Digi__recommended_getting_started
 
 ### init
 - add devices
-- for each device add auth info
+- for each device add auth info via command line -- see `src/hashPassword.js`.
+With zsh use single quotes to prevent var expansion on hash components like `$2a$10`

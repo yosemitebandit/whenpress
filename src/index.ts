@@ -8,6 +8,7 @@ ping:DEVICE1 -> UTC timestamp (string; int compatible)
 */
 
 import { Context, Hono } from 'hono'
+import bcrypt from 'bcryptjs'
 import mustache from 'mustache'
 import moment from 'moment'
 
@@ -100,7 +101,19 @@ app.post("/:device/ping", async c => {
 	/* Receive a device ping.
 	*/
 	const device = c.req.param('device')
-	// TODO: authenticate
+	// Check auth.
+	const postedData = await c.req.json().catch(() => ({}))
+	if (!postedData.password) {
+		return c.text('error', 400)
+	}
+	const storedAuth = await c.env.DB.get(`auth:${device}`)
+	if (storedAuth === null) {
+		return c.text('error', 501)
+	}
+	const authIsValid = await bcrypt.compare(postedData.password, storedAuth)
+	if (!authIsValid) {
+		return c.text('error', 401)
+	}
 	// Register the ping.
 	const now = Math.floor(Date.now() / 1000)
 	await c.env.DB.put(`ping:${device}`, now.toString())

@@ -55,6 +55,23 @@ async function deviceExistsMiddleware(c: Context, next: () => Promise<void>) {
 	await next()
 }
 
+async function checkAuth(c: Context, next: () => Promise<void>) {
+	const device = c.req.param('device')
+	const postedData = await c.req.json().catch(() => ({}))
+	if (!postedData.password) {
+		return c.text('error', 400)
+	}
+	const storedAuth = await c.env.DB.get(`auth:${device}`)
+	if (storedAuth === null) {
+		return c.text('error', 501)
+	}
+	const authIsValid = await bcrypt.compare(postedData.password, storedAuth)
+	if (!authIsValid) {
+		return c.text('error', 401)
+	}
+	await next()
+}
+
 app.get("/", async c => {
 	/* Render homepage.
 	*/
@@ -97,23 +114,11 @@ app.get("/:device", async c => {
 })
 
 app.use("/:device/ping", deviceExistsMiddleware)
+app.use("/:device/ping", checkAuth)
 app.post("/:device/ping", async c => {
 	/* Receive a device ping.
 	*/
 	const device = c.req.param('device')
-	// Check auth.
-	const postedData = await c.req.json().catch(() => ({}))
-	if (!postedData.password) {
-		return c.text('error', 400)
-	}
-	const storedAuth = await c.env.DB.get(`auth:${device}`)
-	if (storedAuth === null) {
-		return c.text('error', 501)
-	}
-	const authIsValid = await bcrypt.compare(postedData.password, storedAuth)
-	if (!authIsValid) {
-		return c.text('error', 401)
-	}
 	// Register the ping.
 	const now = Math.floor(Date.now() / 1000)
 	await c.env.DB.put(`ping:${device}`, now.toString())

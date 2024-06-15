@@ -19,7 +19,6 @@ const homeTemplate = `
 </html>
 `;
 
-// TODO: show list of presses
 // TODO: show presses in last 1wk, 24hr, 1hr
 const deviceTemplate = `
 <!doctype html>
@@ -28,6 +27,11 @@ const deviceTemplate = `
 		<h3>Button: '{{ device }}' (online: {{ deviceOnline }})</h3>
 		<p>Button Presses: {{ presses }}</p>
 		<p>Last Button Press: {{ lastPressRelative }}</p>
+		<p>All Button Presses:</p>
+    <ul>
+      {{ #allPresses }}
+				<li>{{ . }}</li>
+      {{ /allPresses }}
 	</body>
 </html>
 `;
@@ -65,6 +69,16 @@ async function checkAuth(c: Context, next: () => Promise<void>) {
 	await next();
 }
 
+function formatDeviceDataToRelativeTimes(deviceData: DeviceData): string[] {
+	const reversedData = deviceData.events.slice().reverse();
+	return reversedData.map((entry) => {
+		const pressMoment = moment.unix(entry.pressTimestamp);
+		const formattedDateTime = pressMoment.format('ddd MMM D, YYYY h:mmA');
+		const relativeTime = pressMoment.fromNow();
+		return `${formattedDateTime} (${relativeTime})`;
+	});
+}
+
 app.get('/', async (c) => {
 	/* Render homepage.
 	 */
@@ -77,26 +91,30 @@ app.get('/:device', async (c) => {
 	/* Render page for a specific device.
 	 */
 	const device = c.req.param('device');
-	// Track when the device was last active based on ping and press data.
-	let lastActive = null;
-	// Lookup data for the device.
-	let data = {
+	// Setup data for the template.
+	let templateData = {
 		device: device,
 		presses: 0,
 		lastPressRelative: null as null | string,
 		deviceOnline: null as null | boolean,
+		allPresses: null as null | string[],
 	};
+	// Track when the device was last active based on ping and press data.
+	let lastActive = null;
+	// Lookup data for the device.
 	let deviceData = await c.env.DB.get(`data:${device}`);
 	if (deviceData != null) {
 		let jsonData: DeviceData = JSON.parse(deviceData);
+		const allPresses = formatDeviceDataToRelativeTimes(jsonData);
 		const lastPress = Math.max(...jsonData.events.map((event: EventData) => event.pressTimestamp));
 		lastActive = lastPress;
 		const lastPressTime = moment.unix(lastPress);
-		data = {
+		templateData = {
 			device: device,
 			presses: jsonData.events.length,
 			lastPressRelative: moment(lastPressTime).fromNow(),
 			deviceOnline: null,
+			allPresses: allPresses,
 		};
 	}
 	// Lookup ping data to help determine if device is online.
@@ -109,12 +127,12 @@ app.get('/:device', async (c) => {
 	}
 	const now = moment().unix();
 	if (lastActive === null || now - lastActive > ACTIVITY_THRESHOLD) {
-		data.deviceOnline = false;
+		templateData.deviceOnline = false;
 	} else {
-		data.deviceOnline = true;
+		templateData.deviceOnline = true;
 	}
 	// Render.
-	const renderedHtml = mustache.render(deviceTemplate, data);
+	const renderedHtml = mustache.render(deviceTemplate, templateData);
 	return c.html(renderedHtml);
 });
 

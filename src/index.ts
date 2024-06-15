@@ -18,14 +18,17 @@ const homeTemplate = `
 </html>
 `;
 
+// TODO: show ping as online vs offline
+// TODO: show list of presses
+// TODO: show presses in last 1wk, 24hr, 1hr
 const deviceTemplate = `
 <!doctype html>
 <html>
 	<body>
-		<h3>device: '{{ device }}'</h3>
-		<p>presses: {{ presses }}</p>
-		<p>last press: {{ lastPress }}</p>
-		<p>latest ping: {{ ping }}</p>
+		<h3>Button: '{{ device }}'</h3>
+		<p>Button Presses: {{ presses }}</p>
+		<p>Last Button Press: {{ lastPressRelative }}</p>
+		<p>Button was Last Active: {{ pingRelative }}</p>
 	</body>
 </html>
 `;
@@ -79,25 +82,27 @@ app.get('/:device', async (c) => {
 	let data = {
 		device: device,
 		presses: 0,
-		lastPress: null as null | number,
-		ping: null as null | string,
+		lastPressRelative: null as null | string,
+		pingRelative: null as null | string,
 	};
 	let deviceData = await c.env.DB.get(`data:${device}`);
 	if (deviceData != null) {
 		let jsonData: DeviceData = JSON.parse(deviceData);
+		const lastPress = Math.max(...jsonData.events.map((event: EventData) => event.pressTimestamp));
+		const lastPressTime = moment.unix(lastPress);
 		data = {
 			device: device,
 			presses: jsonData.events.length,
-			lastPress: Math.max(...jsonData.events.map((event: EventData) => event.pressTimestamp)),
-			ping: null,
+			lastPressRelative: moment(lastPressTime).fromNow(),
+			pingRelative: null,
 		};
 	}
 	// Lookup and inject ping data.
-	const latestPing = await c.env.DB.get(`ping:${device}`);
-	if (latestPing != null) {
-		const pingTime = moment.unix(parseInt(latestPing, 10));
+	const lastPing = await c.env.DB.get(`ping:${device}`);
+	if (lastPing != null) {
+		const pingTime = moment.unix(parseInt(lastPing, 10));
 		const timeAgo = moment(pingTime).fromNow();
-		data.ping = timeAgo;
+		data.pingRelative = timeAgo;
 	}
 	// Render.
 	const renderedHtml = mustache.render(deviceTemplate, data);

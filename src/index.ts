@@ -122,6 +122,7 @@ app.use('/:device/ping', deviceExistsMiddleware);
 app.use('/:device/ping', checkAuth);
 app.post('/:device/ping', async (c) => {
 	/* Receive a device ping.
+	 * TODO: also store as json, like other data?
 	 */
 	const device = c.req.param('device');
 	// Register the ping.

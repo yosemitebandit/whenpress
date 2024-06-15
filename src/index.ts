@@ -8,6 +8,7 @@ type Bindings = {
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
+const ACTIVITY_THRESHOLD = 10 * 60;
 
 const homeTemplate = `
 <!doctype html>
@@ -18,17 +19,15 @@ const homeTemplate = `
 </html>
 `;
 
-// TODO: show ping as online vs offline
 // TODO: show list of presses
 // TODO: show presses in last 1wk, 24hr, 1hr
 const deviceTemplate = `
 <!doctype html>
 <html>
 	<body>
-		<h3>Button: '{{ device }}'</h3>
+		<h3>Button: '{{ device }}' (online: {{ deviceOnline }})</h3>
 		<p>Button Presses: {{ presses }}</p>
 		<p>Last Button Press: {{ lastPressRelative }}</p>
-		<p>Button was Last Active: {{ pingRelative }}</p>
 	</body>
 </html>
 `;
@@ -78,31 +77,41 @@ app.get('/:device', async (c) => {
 	/* Render page for a specific device.
 	 */
 	const device = c.req.param('device');
+	// Track when the device was last active based on ping and press data.
+	let lastActive = null;
 	// Lookup data for the device.
 	let data = {
 		device: device,
 		presses: 0,
 		lastPressRelative: null as null | string,
-		pingRelative: null as null | string,
+		deviceOnline: null as null | boolean,
 	};
 	let deviceData = await c.env.DB.get(`data:${device}`);
 	if (deviceData != null) {
 		let jsonData: DeviceData = JSON.parse(deviceData);
 		const lastPress = Math.max(...jsonData.events.map((event: EventData) => event.pressTimestamp));
+		lastActive = lastPress;
 		const lastPressTime = moment.unix(lastPress);
 		data = {
 			device: device,
 			presses: jsonData.events.length,
 			lastPressRelative: moment(lastPressTime).fromNow(),
-			pingRelative: null,
+			deviceOnline: null,
 		};
 	}
-	// Lookup and inject ping data.
+	// Lookup ping data to help determine if device is online.
 	const lastPing = await c.env.DB.get(`ping:${device}`);
 	if (lastPing != null) {
-		const pingTime = moment.unix(parseInt(lastPing, 10));
-		const timeAgo = moment(pingTime).fromNow();
-		data.pingRelative = timeAgo;
+		const pingTime = parseInt(lastPing, 10);
+		if (lastActive === null || pingTime > lastActive) {
+			lastActive = pingTime;
+		}
+	}
+	const now = moment().unix();
+	if (lastActive === null || now - lastActive > ACTIVITY_THRESHOLD) {
+		data.deviceOnline = false;
+	} else {
+		data.deviceOnline = true;
 	}
 	// Render.
 	const renderedHtml = mustache.render(deviceTemplate, data);

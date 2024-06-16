@@ -53,7 +53,7 @@ visit `http://localhost:8787/epona` to see the latest data
 - ping:DEVICE1 -> "UTC timestamp" (string; int compatible)
 
 
-## ts testing
+### ts testing
 - er the tests came with the tutorial
 and I haven't removed them from the repo..
 nor have I updated them..so they don't work

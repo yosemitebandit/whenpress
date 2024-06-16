@@ -1,3 +1,9 @@
+a small button that tracks when it has been pressed
+
+- `xbee/` contains code for a simple device: button, RTC, radio
+- the rest is a webapp for receiving device data and rendering
+
+
 ### local dev
 first init devices:
 

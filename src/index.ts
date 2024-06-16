@@ -13,8 +13,18 @@ const ACTIVITY_THRESHOLD = 10 * 60;
 const homeTemplate = `
 <!doctype html>
 <html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
+    <title>WhenPress</title>
+	</head>
 	<body>
-		<h3>whenpress</h3>
+    <p>&nbsp;</p>
+    <article>
+		  <h2>WhenPress</h2>
+      <a href="https://github.com/yosemitebandit/whenpress">source</a>
+    </article>
 	</body>
 </html>
 `;
@@ -23,15 +33,30 @@ const homeTemplate = `
 const deviceTemplate = `
 <!doctype html>
 <html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
+    <title>{{ device }} - WhenPress</title>
+	</head>
 	<body>
-		<h3>Button: '{{ device }}' (online: {{ deviceOnline }})</h3>
-		<p>Button Presses: {{ presses }}</p>
-		<p>Last Button Press: {{ lastPressRelative }}</p>
-		<p>All Button Presses:</p>
-    <ul>
-      {{ #allPresses }}
-				<li>{{ . }}</li>
-      {{ /allPresses }}
+    <p>&nbsp;</p>
+    <article>
+		  <h2>'{{ device }}' (online: {{ deviceOnline }})</h2>
+			<p><kbd>Button Presses:</kbd>
+			<kbd>{{ presses }}</kbd></p>
+			<p><kbd>Last Button Press:</kbd>
+			<kbd>{{ lastPressRelative }}</kbd></p>
+			<details>
+				<summary>All Button Presses:</summary>
+				<ul>
+					{{ #allPresses }}
+						<li><small>{{ . }}</small></li>
+					{{ /allPresses }}
+				</ul>
+			</details>
+      <a href="https://github.com/yosemitebandit/whenpress">source</a>
+    </article>
 	</body>
 </html>
 `;

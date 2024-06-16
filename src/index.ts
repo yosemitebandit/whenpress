@@ -23,6 +23,7 @@ const homeTemplate = `
     <p>&nbsp;</p>
     <article>
 		  <h2>WhenPress</h2>
+      <p>When did I last push that button 🤔</p>
       <a href="https://github.com/yosemitebandit/whenpress">source</a>
     </article>
 	</body>

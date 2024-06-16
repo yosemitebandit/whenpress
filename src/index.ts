@@ -37,12 +37,12 @@ const deviceTemplate = `
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
-    <title>{{ device }} - WhenPress</title>
+    <title>{{ deviceName }} - WhenPress</title>
 	</head>
 	<body>
     <p>&nbsp;</p>
     <article>
-		  <h2>'{{ device }}' (online: {{ deviceOnline }})</h2>
+		  <h2>{{ deviceTitle }}</h2>
 			<p><kbd>Button Presses:</kbd>
 			<kbd>{{ presses }}</kbd></p>
 			<p><kbd>Last Button Press:</kbd>
@@ -115,19 +115,19 @@ app.use('/:device', deviceExistsMiddleware);
 app.get('/:device', async (c) => {
 	/* Render page for a specific device.
 	 */
-	const device = c.req.param('device');
+	const deviceName = c.req.param('device');
 	// Setup data for the template.
 	let templateData = {
-		device: device,
+		deviceName: deviceName,
+		deviceTitle: null as null | string,
 		presses: 0,
 		lastPressRelative: null as null | string,
-		deviceOnline: null as null | boolean,
 		allPresses: null as null | string[],
 	};
 	// Track when the device was last active based on ping and press data.
 	let lastActive = null;
 	// Lookup data for the device.
-	let deviceData = await c.env.DB.get(`data:${device}`);
+	let deviceData = await c.env.DB.get(`data:${deviceName}`);
 	if (deviceData != null) {
 		let jsonData: DeviceData = JSON.parse(deviceData);
 		const allPresses = formatDeviceDataToRelativeTimes(jsonData);
@@ -135,27 +135,29 @@ app.get('/:device', async (c) => {
 		lastActive = lastPress;
 		const lastPressTime = moment.unix(lastPress);
 		templateData = {
-			device: device,
+			deviceName: deviceName,
+			deviceTitle: null,
 			presses: jsonData.events.length,
 			lastPressRelative: moment(lastPressTime).fromNow(),
-			deviceOnline: null,
 			allPresses: allPresses,
 		};
 	}
 	// Lookup ping data to help determine if device is online.
-	const lastPing = await c.env.DB.get(`ping:${device}`);
+	const lastPing = await c.env.DB.get(`ping:${deviceName}`);
 	if (lastPing != null) {
 		const pingTime = parseInt(lastPing, 10);
 		if (lastActive === null || pingTime > lastActive) {
 			lastActive = pingTime;
 		}
 	}
+	let deviceTitle = null;
 	const now = moment().unix();
 	if (lastActive === null || now - lastActive > ACTIVITY_THRESHOLD) {
-		templateData.deviceOnline = false;
+		deviceTitle = `${deviceName} is offline`;
 	} else {
-		templateData.deviceOnline = true;
+		deviceTitle = `${deviceName} is online`;
 	}
+	templateData.deviceTitle = deviceTitle;
 	// Render.
 	const renderedHtml = mustache.render(deviceTemplate, templateData);
 	return c.html(renderedHtml);

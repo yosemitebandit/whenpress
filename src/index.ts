@@ -16,7 +16,7 @@ const homeTemplate = `
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
     <title>WhenPress</title>
 	</head>
 	<body>
@@ -36,7 +36,7 @@ const deviceTemplate = `
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
     <title>{{ deviceName }} - WhenPress</title>
 	</head>
 	<body>
@@ -49,11 +49,13 @@ const deviceTemplate = `
 			<kbd>{{ lastPressRelative }}</kbd></p>
 			<details>
 				<summary>All Button Presses:</summary>
-				<ul>
+				<small>
+				<ol reversed>
 					{{ #allPresses }}
-						<li><small>{{ . }}</small></li>
+						<li>{{ . }}</li>
 					{{ /allPresses }}
-				</ul>
+				</ol>
+				</small>
 			</details>
       <a href="https://github.com/yosemitebandit/whenpress">source</a>
     </article>

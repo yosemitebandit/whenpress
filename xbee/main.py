@@ -1,3 +1,14 @@
+"""WhenPress device.
+
+1. When button is pressed, store timestamp from RTC.
+2. Periodically send all stored events to cloud.
+3. Periodically send a ping to the cloud if there are no events.
+
+potential optimizations
+- event persistence survives device reboot
+- don't send ping if we sent events recently
+- send battery info
+"""
 import time
 
 from machine import Pin

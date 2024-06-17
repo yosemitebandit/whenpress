@@ -1,7 +1,7 @@
 a small button that tracks when it has been pressed
 
-- `xbee/` contains code for a simple device: button, RTC, radio
-- the rest is a webapp for receiving device data and rendering
+- `xbee/` contains code (micropython) for a simple device: button, RTC and a radio
+- the rest is a webapp (ts) for receiving device data, storing it and rendering device history
 - uses cloudflare kv and cf workers
 
 

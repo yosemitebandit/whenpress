@@ -67,7 +67,9 @@ nor have I updated them..so they don't work
 
 
 ### xbee and micropython
-- seems that the module must be named `main.py` for it to autostart on an xbee
+- for code to auto-start on xbee, the module must be named `main.py`
+- have to put `urequests` in `lib/` on the device fs
+- hw interrupts are not available on the xbee dev board,
+have to use polling for the on-device button :/
 - getting started guide with all the right settings:
 https://cdn.sparkfun.com/assets/f/2/a/2/5/OEM__Digi__recommended_getting_started_guide_-_Xbee_Cellular1.pdf
-- have to put `urequests` in `lib/` on the device

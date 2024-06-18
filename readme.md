@@ -1,6 +1,6 @@
 a small button that tracks when it has been pressed
 
-- `xbee/` contains code (micropython) for a simple device: button, RTC and a radio
+- `device/` contains code (micropython) for a simple device: button, RTC and a radio (currently xbee)
 - the rest is a webapp (ts) for receiving device data, storing it and rendering device history
 - uses cloudflare kv and cf workers
 
@@ -66,10 +66,10 @@ and I haven't removed them from the repo..
 nor have I updated them..so they don't work
 
 
-### xbee and micropython
+### the hardware device (xbee) and micropython
 - for code to auto-start on xbee, the module must be named `main.py`
 - have to put `urequests` in `lib/` on the device fs
 - hw interrupts are not available on the xbee dev board,
 have to use polling for the on-device button :/
-- getting started guide with all the right settings:
+- the xbee getting started guide with all the right settings:
 https://cdn.sparkfun.com/assets/f/2/a/2/5/OEM__Digi__recommended_getting_started_guide_-_Xbee_Cellular1.pdf

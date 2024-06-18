@@ -10,7 +10,7 @@ first init devices:
 
 ```
 $ npx wrangler \
-kv:key put \
+kv key put \
 "devices" '["link", "zelda", "epona"]' \
 --binding=DB --local
 ```
@@ -20,11 +20,11 @@ When adding to kv, note the single quotes particularly around the hash,
 this prevents variable expansion in zsh, e.g. for the parts like `$2a`
 
 ```
-$ node src/hashPassword.js asdfasdf123
+$ node src/hashPassword.js 'asdfasdf123'
 $2a$10$Py8UruAPFBngNLr7FFpaLeJ/9o4Vx3I6T6zd5sEt2NAlic7DzMUpy
 
 $ npx wrangler \
-kv:key put \
+kv key put \
 "auth:epona" '$2a$10$Py8UruAPFBngNLr7FFpaLeJ/9o4Vx3I6T6zd5sEt2NAlic7DzMUpy' \
 --binding=DB --local
 ```

@@ -73,3 +73,7 @@ nor have I updated them..so they don't work
 have to use polling for the on-device button :/
 - the xbee getting started guide with all the right settings:
 https://cdn.sparkfun.com/assets/f/2/a/2/5/OEM__Digi__recommended_getting_started_guide_-_Xbee_Cellular1.pdf
+- the digi micropython guide:
+https://www.digi.com/resources/documentation/digidocs/90002219
+- the micropython guide as a pdf:
+https://www.digi.com/resources/documentation/digidocs/PDFs/90002219.pdf

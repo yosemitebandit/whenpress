@@ -1,7 +1,7 @@
 """WhenPress device.
 
 1. When button is pressed, (TODO) store timestamp.
-2. TODO: Periodically send all stored events to cloud.
+2. Periodically send all stored events to cloud.
 3. TODO: Periodically send a ping to the cloud if there are no events.
 
 potential optimizations

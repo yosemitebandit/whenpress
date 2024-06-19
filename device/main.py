@@ -2,7 +2,7 @@
 
 1. When button is pressed, (TODO) store timestamp.
 2. Periodically send all stored events to cloud.
-3. TODO: Periodically send a ping to the cloud if there are no events.
+3. Periodically send a ping to the cloud if there are no events.
 
 potential optimizations
 - use qwiic button
@@ -28,6 +28,8 @@ button = machine.Pin("D0", machine.Pin.IN, machine.Pin.PULL_UP)
 
 base_url = "https://whenpress.matt-ball-2.workers.dev"
 headers = {"Content-Type": "application/json"}
+
+PING_PERIOD = 5 * 60
 
 
 def is_connected():
@@ -68,7 +70,7 @@ while True:
 epoch_difference = 946684800 + time.tz_offset()
 button_being_pressed = False
 events = []
-
+last_ping = -PING_PERIOD * 1000  # init so the ping triggers on boot
 
 # Main loop.
 print("whenpress: ready.")
@@ -112,3 +114,24 @@ while True:
     # Clear out events that we succesfully sent.
     for index in successful_indices:
         del events[index]
+
+    # Periodically send a ping.
+    if time.ticks_diff(time.ticks_ms(), last_ping) > (PING_PERIOD * 1000):
+        print("ping: sending")
+        data = {
+            "password": credentials.password,
+        }
+        # TODO: likely to hit exceptions here..
+        response = urequests.post(
+            base_url + "/" + credentials.device_name + "/ping",
+            headers=headers,
+            data=ujson.dumps(data),
+        )
+        if response.status_code == 200:
+            print("ping: success")
+        else:
+            print("ping: failed")
+            print("ping: response status code: %s" % response.status_code)
+            print("ping: response reason: %s" % response.reason)
+            print("ping: response text: %s" % response.text)
+        last_ping = time.ticks_ms()

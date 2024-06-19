@@ -5,8 +5,8 @@ a small button that tracks when it has been pressed
 - uses cloudflare kv and cf workers
 
 
-### local dev
-first init devices:
+### setup and using wrangler
+first init some devices:
 
 ```
 $ npx wrangler \
@@ -15,7 +15,7 @@ kv key put \
 --binding=DB --local
 ```
 
-add auth - generate the hash via `hashPassword.js`.
+add auth -- generate the hash via `hashPassword.js`.
 When adding to kv, note the single quotes particularly around the hash,
 this prevents variable expansion in zsh, e.g. for the parts like `$2a`
 
@@ -28,6 +28,8 @@ kv key put \
 "auth:epona" '$2a$10$Py8UruAPFBngNLr7FFpaLeJ/9o4Vx3I6T6zd5sEt2NAlic7DzMUpy' \
 --binding=DB --local
 ```
+
+setup the prod server in the same way, just omit `--local`
 
 start the dev server
 ```
@@ -48,6 +50,11 @@ $ curl -X POST \
 -H "Content-Type: application/json" \
 -d '{"pressTimestamp": 1715408340, "password": "asdfasdf123"}' \
 http://localhost:8787/epona/data
+```
+
+deploy
+```
+npx wrangler deploy
 ```
 
 visit `http://localhost:8787/epona` to see the latest data

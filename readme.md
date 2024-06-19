@@ -77,3 +77,18 @@ https://cdn.sparkfun.com/assets/f/2/a/2/5/OEM__Digi__recommended_getting_started
 https://www.digi.com/resources/documentation/digidocs/90002219
 - the micropython guide as a pdf:
 https://www.digi.com/resources/documentation/digidocs/PDFs/90002219.pdf
+- micropython libs for xbee: https://github.com/digidotcom/xbee-micropython
+
+
+### uploading to xbee
+- use Digi Xbee Studio
+- connect to device, then go to Xbee file system in left pane
+- move `main.py` into `/flash`
+- move libs like `urequests` and creds into `/flash/lib`
+- restart xbee device with button on the devboard
+or from the studio: dashboard > device reset
+- go to micropython terminal in left pane and view debug output
+
+
+### todos
+- improve timezone display on the device page

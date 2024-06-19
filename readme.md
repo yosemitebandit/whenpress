@@ -99,3 +99,4 @@ or from the studio: dashboard > device reset
 
 ### todos
 - improve timezone display on the device page
+- can put the favicon base64 string in kv

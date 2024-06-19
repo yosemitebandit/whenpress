@@ -15,20 +15,19 @@ potential optimizations
 import time
 
 import machine
+import ujson
+import urequests
 import usocket
 
-# import urequests
-# import utime
+import credentials  # cp device/credentials.py -> lib/
 
-print("whenpress.")
+print("whenpress: booting.")
+
 led = machine.Pin("D4", machine.Pin.OUT)
 button = machine.Pin("D0", machine.Pin.IN, machine.Pin.PULL_UP)
 
-# url = "https://whenpress.matt-ball-2.workers.dev/sage/ping"
-# headers = {"Content-Type": "application/json"}
-# data = {}
-# response = urequests.post(url, headers=headers, data=data)
-# print(response.text)
+base_url = "https://whenpress.matt-ball-2.workers.dev"
+headers = {"Content-Type": "application/json"}
 
 
 def is_connected():
@@ -52,7 +51,9 @@ while True:
         print("cell network connection: waiting..")
         time.sleep(5)
 
-# Wait for clock to be set.
+# Wait for clock setup.
+# I believe the cell modem needs to connect and bootstrap the Xbee's clock.
+# The time.tz_offset method fails unless you wait about 15s after boot.
 while True:
     try:
         time.tz_offset()
@@ -69,13 +70,45 @@ button_being_pressed = False
 events = []
 
 
-# Record button press events.
+# Main loop.
+print("whenpress: ready.")
 while True:
+    # Check for button presses on devboard button.
     if button.value() == 0:  # when pressed, button is pulled low
         if not button_being_pressed:
             events.append({"pressTimestamp": time.time() + epoch_difference})
-            print("events:" + str(events))
             button_being_pressed = True
             led.toggle()
     else:
         button_being_pressed = False
+
+    # Transmit any events.
+    successful_indices = []
+    if events:
+        print("events to transmit: %s" % len(events))
+        for index, event in enumerate(events):
+            print("sending event #%s" % index)
+            data = {
+                "password": credentials.password,
+                "pressTimestamp": event["pressTimestamp"],
+            }
+            # TODO: likely to hit exceptions here..
+            # e.g.
+            #  - OSError: [Errno 7111] ECONNREFUSED
+            #  - OSError: [Errno 7110] ETIMEDOUT
+            response = urequests.post(
+                base_url + "/" + credentials.device_name + "/data",
+                headers=headers,
+                data=ujson.dumps(data),
+            )
+            if response.status_code == 200:
+                print("successfully sent event #%s" % index)
+                successful_indices.append(index)
+            else:
+                print("failed to send event #%s" % index)
+                print("response status code: %s" % response.status_code)
+                print("response reason: %s" % response.reason)
+                print("response text: %s" % response.text)
+    # Clear out events that we succesfully sent.
+    for index in successful_indices:
+        del events[index]

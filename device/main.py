@@ -1,8 +1,8 @@
 """WhenPress device.
 
-1. When button is pressed, (TODO) store timestamp.
+1. When button is pressed, store timestamp.
 2. Periodically send all stored events to cloud.
-3. Periodically send a ping to the cloud if there are no events.
+3. Periodically send a ping to the cloud.
 
 potential optimizations
 - use qwiic button
@@ -65,9 +65,10 @@ while True:
         print("clock bootstrap: waiting..")
         time.sleep(5)
 
-# Xbee uses 1/1/2000 as epoch.
-# We can add this value and the tzoffset to create a UTC timestamp.
-epoch_difference = 946684800 + time.tz_offset()
+# Xbee uses 1/1/2000 as epoch start instead of 1/1/1970.
+# To create a more typical UTC timestamp indexed from 1970,
+# we can add the delta in seconds and the tzoffset.
+EPOCH_DIFFERENCE = 946684800 + time.tz_offset()
 button_being_pressed = False
 events = []
 last_ping = -PING_PERIOD * 1000  # init so the ping triggers on boot
@@ -78,7 +79,7 @@ while True:
     # Check for button presses on devboard button.
     if button.value() == 0:  # when pressed, button is pulled low
         if not button_being_pressed:
-            events.append({"pressTimestamp": time.time() + epoch_difference})
+            events.append({"pressTimestamp": time.time() + EPOCH_DIFFERENCE})
             button_being_pressed = True
             led.toggle()
     else:

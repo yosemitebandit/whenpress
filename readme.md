@@ -74,6 +74,7 @@ nor have I updated them..so they don't work
 
 
 ### the hardware device (xbee) and micropython
+- flip the switch on the devboard for I2C/DUSB to I2C mode
 - for code to auto-start on xbee, the module must be named `main.py`
 - have to put `urequests` in `lib/` on the device fs,
 same with the SFE qwiic button lib

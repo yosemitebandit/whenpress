@@ -30,7 +30,7 @@ button = machine.Pin("D0", machine.Pin.IN, machine.Pin.PULL_UP)
 
 # Start qwiic button.
 xbee_mp_driver = micropython_i2c.MicroPythonI2C()
-qbutton = qwiic_button.QwiicButton(address=0x6F, i2c_driver=xbee_mp_driver)
+qbutton = qwiic_button.QwiicButton(address=None, i2c_driver=xbee_mp_driver)
 print("qwiic button: starting.")
 while not qbutton.begin():
     print("qwiic button: failed to init, retrying..")

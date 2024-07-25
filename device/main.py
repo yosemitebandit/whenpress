@@ -25,18 +25,22 @@ import urequests
 
 print("whenpress: booting.")
 
-led = machine.Pin("D4", machine.Pin.OUT)
-button = machine.Pin("D0", machine.Pin.IN, machine.Pin.PULL_UP)
-
 # Start qwiic button.
+# We want to init this asap so we can start capturing button presses.
 xbee_mp_driver = micropython_i2c.MicroPythonI2C()
 qbutton = qwiic_button.QwiicButton(address=None, i2c_driver=xbee_mp_driver)
 print("qwiic button: starting.")
 while not qbutton.begin():
     print("qwiic button: failed to init, retrying..")
     time.sleep(5)
+ticks_since_qbutton_start = time.ticks_ms()
 print("qwiic button: ready.")
 print("qwiic button: fw version: " + str(qbutton.get_firmware_version()))
+time.sleep(0.1)  # Give the i2c bus a break.
+qbutton.LED_on(brightness=50)
+
+led = machine.Pin("D4", machine.Pin.OUT)
+button = machine.Pin("D0", machine.Pin.IN, machine.Pin.PULL_UP)
 
 base_url = "https://whenpress.matt-ball-2.workers.dev"
 headers = {"Content-Type": "application/json"}
@@ -77,6 +81,15 @@ while True:
         print("clock bootstrap: waiting..")
         time.sleep(5)
 
+# Determine the qbutton start timestamp.
+# Now that the cell radio has provided localtime, we can convert from time-since-boot to time-since epoch.
+ticks_since_boot = time.ticks_ms()
+qbutton_start_time = (
+    time.mktime(time.localtime())
+    - ticks_since_boot / 1000.0
+    + ticks_since_qbutton_start / 1000.0
+)
+
 # Xbee uses 1/1/2000 as epoch start instead of 1/1/1970.
 # To create a more typical UTC timestamp indexed from 1970,
 # we can add the delta in seconds and the tzoffset.
@@ -98,6 +111,12 @@ while True:
         button_being_pressed = False
 
     # Check for button presses on qwiic button.
+    try:
+        while not qbutton.is_clicked_queue_empty():
+            qbutton_timer_value = qbutton.pop_clicked_queue() / 1000.0
+            events.append({"pressTimestamp": qbutton_start_time + qbutton_timer_value})
+    except OSError as e:
+        print("qbutton: error: " + str(e))
 
     # Transmit any events.
     successful_indices = []
@@ -150,3 +169,6 @@ while True:
             print("ping: response reason: %s" % response.reason)
             print("ping: response text: %s" % response.text)
         last_ping = time.ticks_ms()
+
+    # Pause to give the i2c bus a rest.
+    time.sleep(0.1)

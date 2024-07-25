@@ -114,7 +114,13 @@ while True:
     try:
         while not qbutton.is_clicked_queue_empty():
             qbutton_timer_value = qbutton.pop_clicked_queue() / 1000.0
-            events.append({"pressTimestamp": qbutton_start_time + qbutton_timer_value})
+            events.append(
+                {
+                    "pressTimestamp": (
+                        qbutton_start_time + qbutton_timer_value + EPOCH_DIFFERENCE
+                    )
+                }
+            )
     except OSError as e:
         print("qbutton: error: " + str(e))
 

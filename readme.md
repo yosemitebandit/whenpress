@@ -101,5 +101,13 @@ or from the studio: dashboard > device reset
 
 
 ### todos
+- fix event queue handling in device code
+- print a cool logo when the device boots
+- remove old button code
+- clean up some naming: e.g. `is_connected` (to i2c? to network?)
+- need error handling in so many places...network and i2c are flaking out nonstop
+- look at button's queue handling..
+  - I think it's only 15 events max and how does it do the timing exactly
+  - see [here](https://github.com/sparkfun/Qwiic_Button/blob/master/Firmware/Qwiic_Button/Qwiic_Button.ino)
 - improve timezone display on the device page
 - can put the favicon base64 string in kv

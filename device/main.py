@@ -5,7 +5,6 @@
 3. Periodically send a ping to the cloud.
 
 potential optimizations
-- use qwiic button
 - use external rtc
 - event persistence survives device reboot
 - don't send ping if we sent events recently
@@ -16,15 +15,28 @@ import time
 
 import machine
 import ujson
-import urequests
 import usocket
 
-import credentials  # cp device/credentials.py -> lib/
+# Use digi studio to copy lib/* -> /flash/lib/
+import credentials
+import micropython_i2c
+import qwiic_button
+import urequests
 
 print("whenpress: booting.")
 
 led = machine.Pin("D4", machine.Pin.OUT)
 button = machine.Pin("D0", machine.Pin.IN, machine.Pin.PULL_UP)
+
+# Start qwiic button.
+xbee_mp_driver = micropython_i2c.MicroPythonI2C()
+qbutton = qwiic_button.QwiicButton(address=0x6F, i2c_driver=xbee_mp_driver)
+print("qwiic button: starting.")
+while not qbutton.begin():
+    print("qwiic button: failed to init, retrying..")
+    time.sleep(5)
+print("qwiic button: ready.")
+print("qwiic button: fw version: " + str(qbutton.get_firmware_version()))
 
 base_url = "https://whenpress.matt-ball-2.workers.dev"
 headers = {"Content-Type": "application/json"}
@@ -84,6 +96,8 @@ while True:
             led.toggle()
     else:
         button_being_pressed = False
+
+    # Check for button presses on qwiic button.
 
     # Transmit any events.
     successful_indices = []

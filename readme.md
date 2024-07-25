@@ -75,7 +75,8 @@ nor have I updated them..so they don't work
 
 ### the hardware device (xbee) and micropython
 - for code to auto-start on xbee, the module must be named `main.py`
-- have to put `urequests` in `lib/` on the device fs
+- have to put `urequests` in `lib/` on the device fs,
+same with the SFE qwiic button lib
 - hw interrupts are not available on the xbee dev board,
 have to use polling for the on-device button :/
 - the xbee getting started guide with all the right settings:
@@ -91,7 +92,8 @@ https://www.digi.com/resources/documentation/digidocs/PDFs/90002219.pdf
 - use Digi Xbee Studio
 - connect to device, then go to Xbee file system in left pane
 - move `main.py` into `/flash`
-- move libs like `urequests` and creds into `/flash/lib`
+- move libs like `urequests` and `qwiic_button` into `/flash/lib`
+- also move creds into `/flash/lib`
 - restart xbee device with button on the devboard
 or from the studio: dashboard > device reset
 - go to micropython terminal in left pane and view debug output

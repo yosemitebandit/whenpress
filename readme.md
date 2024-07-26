@@ -124,4 +124,3 @@ or from the studio: dashboard > device reset
 	- there are some other small time discrepancies;
 	like button presses that come in from a few minutes in the future
 	- can put the favicon base64 string in kv
-	- buy domain

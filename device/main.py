@@ -53,7 +53,7 @@ while True:
         print("qbutton: error: " + str(e))
         time.sleep(0.1)
 
-BASE_URL = "https://whenpress.matt-ball-2.workers.dev"
+BASE_URL = "https://whenpress.net"
 HEADERS = {"Content-Type": "application/json"}
 PING_PERIOD = 5 * 60
 

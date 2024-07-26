@@ -118,8 +118,10 @@ or from the studio: dashboard > device reset
 	- don't block upfront for connectivity
 	- don't block indefinitely for anything
 	- FSM
+	- test with button presses during boot
 - backend/site
 	- improve timezone display on the device page
 	- there are some other small time discrepancies;
 	like button presses that come in from a few minutes in the future
 	- can put the favicon base64 string in kv
+	- buy domain

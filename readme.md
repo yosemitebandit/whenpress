@@ -116,6 +116,7 @@ or from the studio: dashboard > device reset
 	- sleep the radio
 	- don't block upfront for connectivity
 	- don't block indefinitely for anything
+	- FSM
 - backend/site
 	- improve timezone display on the device page
 	- can put the favicon base64 string in kv

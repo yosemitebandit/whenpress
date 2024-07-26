@@ -8,7 +8,6 @@ with an attached Sparkfun qwiic button.
 3. periodically send a ping to the cloud.
 """
 
-import collections
 import time
 
 import machine
@@ -120,7 +119,7 @@ qbutton_start_time = (
 # To create a more typical UTC timestamp indexed from 1970,
 # we can add the delta in seconds and the tzoffset.
 EPOCH_DIFFERENCE = 946684800 + time.tz_offset()
-events = collections.deque()
+events = []
 last_ping = -PING_PERIOD * 1000  # init so the ping triggers on boot
 
 # Main loop.
@@ -144,7 +143,7 @@ while True:
     # If transmission fails, add the event back into the queue.
     if events:
         print("event tx: event count: %s" % len(events))
-        event = events.popleft()
+        event = events.pop(0)
         print("event tx: sending one event")
         success = http_post(
             url=BASE_URL + "/" + credentials.device_name + "/data",

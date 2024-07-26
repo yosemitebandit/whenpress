@@ -120,4 +120,6 @@ or from the studio: dashboard > device reset
 	- FSM
 - backend/site
 	- improve timezone display on the device page
+	- there are some other small time discrepancies;
+	like button presses that come in from a few minutes in the future
 	- can put the favicon base64 string in kv

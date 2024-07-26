@@ -80,12 +80,12 @@ nor have I updated them..so they don't work
 same with the SFE qwiic button lib
 - hw interrupts are not available on the xbee dev board,
 have to use polling for the on-device button :/
-- the xbee getting started guide with all the right settings:
+- the devboard's getting started guide with all the right settings:
 https://cdn.sparkfun.com/assets/f/2/a/2/5/OEM__Digi__recommended_getting_started_guide_-_Xbee_Cellular1.pdf
+- digi's xbee cellular guide:
+https://www.digi.com/resources/documentation/digidocs/90001525
 - the digi micropython guide:
 https://www.digi.com/resources/documentation/digidocs/90002219
-- the micropython guide as a pdf:
-https://www.digi.com/resources/documentation/digidocs/PDFs/90002219.pdf
 - micropython libs for xbee: https://github.com/digidotcom/xbee-micropython
 
 
@@ -113,7 +113,8 @@ or from the studio: dashboard > device reset
 	- event persistence survives device reboot
 	- don't send ping if we sent events recently
 	- send battery info
-	- sleep the radio
+	- sleep the radio (default is "normal mode": the device will not enter sleep;
+	see the digi guides for info on micropython execution during sleep)
 	- don't block upfront for connectivity
 	- don't block indefinitely for anything
 	- FSM

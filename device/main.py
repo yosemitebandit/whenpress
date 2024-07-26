@@ -167,14 +167,15 @@ while True:
     # Periodically send a ping.
     if time.ticks_diff(time.ticks_ms(), last_ping) > (PING_PERIOD * 1000):
         print("ping: sending")
-        http_post(
+        success = http_post(
             url=BASE_URL + "/" + credentials.device_name + "/ping",
             headers=HEADERS,
             data={
                 "password": credentials.password,
             },
         )
-        last_ping = time.ticks_ms()
+        if success:
+            last_ping = time.ticks_ms()
 
     # Pause to give the i2c bus a rest.
     time.sleep(0.1)

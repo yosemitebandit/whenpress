@@ -72,8 +72,8 @@ def http_post(url, headers, data):
             headers=headers,
             data=ujson.dumps(data),
         )
-    except OSError as e:
-        print("http post: OSError: " + str(e))
+    except (OSError, IndexError) as e:
+        print("http post: exception: " + str(e))
         return False
     if response.status_code == 200:
         print("http post: success")

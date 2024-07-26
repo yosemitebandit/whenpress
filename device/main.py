@@ -58,7 +58,7 @@ headers = {"Content-Type": "application/json"}
 PING_PERIOD = 5 * 60
 
 
-def is_connected():
+def is_radio_connected():
     try:
         usocket.getaddrinfo("8.8.8.8", 53)
         return True
@@ -72,11 +72,11 @@ def is_connected():
 # we might want to record a button press before we've established connectivity.
 # TODO: leverage "time since last reset" in combination with network time.
 while True:
-    if is_connected():
-        print("cell network connection: ready.")
+    if is_radio_connected():
+        print("network connection: ready.")
         break
     else:
-        print("cell network connection: waiting..")
+        print("network connection: waiting..")
         time.sleep(5)
 
 # Wait for clock setup.

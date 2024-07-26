@@ -23,7 +23,17 @@ import micropython_i2c
 import qwiic_button
 import urequests
 
-print("whenpress: booting.")
+
+print(
+    """
+                   __
+         _      __/ /_  ___  ____  ____  ________  __________
+        | | /| / / __ \/ _ \/ __ \/ __ \/ ___/ _ \/ ___/ ___/
+        | |/ |/ / / / /  __/ / / / /_/ / /  /  __(__  |__  )
+        |__/|__/_/ /_/\___/_/ /_/ .___/_/   \___/____/____/
+                               /_/
+      """
+)
 
 # Start qwiic button.
 # We want to init this asap so we can start capturing button presses.

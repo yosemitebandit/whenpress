@@ -103,7 +103,6 @@ or from the studio: dashboard > device reset
 ### todos
 - device-side
 	- fix event queue handling in device code
-	- print a cool logo when the device boots
 	- remove old button code
 	- clean up some naming: e.g. `is_connected` (to i2c? to network?)
 	- need error handling in so many places...network and i2c are flaking out nonstop

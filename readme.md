@@ -112,7 +112,8 @@ or from the studio: dashboard > device reset
 	- use external RTC
 	- event persistence survives device reboot
 	- don't send ping if we sent events recently
-	- send battery info
+	- send battery telemetry
+	- send memory telemetry: `micropython.mem_info()`
 	- sleep the radio (default is "normal mode": the device will not enter sleep;
 	see the digi guides for info on micropython execution during sleep)
 	- don't block upfront for connectivity

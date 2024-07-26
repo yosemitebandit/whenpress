@@ -44,9 +44,7 @@ ticks_since_qbutton_start = time.ticks_ms()
 print("qwiic button: ready.")
 print("qwiic button: fw version: " + str(qbutton.get_firmware_version()))
 time.sleep(0.1)  # Give the i2c bus a break.
-qbutton.LED_on(brightness=50)
-
-led = machine.Pin("D4", machine.Pin.OUT)
+qbutton.LED_off()
 
 base_url = "https://whenpress.matt-ball-2.workers.dev"
 headers = {"Content-Type": "application/json"}

@@ -125,6 +125,7 @@ last_ping = -PING_PERIOD * 1000  # init so the ping triggers on boot
 
 # Main loop.
 print("whenpress: ready.")
+print("device time: " + time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime()))
 while True:
     # Check for button presses on qwiic button.
     try:

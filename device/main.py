@@ -47,9 +47,8 @@ print("qwiic button: fw version: " + str(qbutton.get_firmware_version()))
 time.sleep(0.1)  # Give the i2c bus a break.
 qbutton.LED_off()
 
-base_url = "https://whenpress.matt-ball-2.workers.dev"
-headers = {"Content-Type": "application/json"}
-
+BASE_URL = "https://whenpress.matt-ball-2.workers.dev"
+HEADERS = {"Content-Type": "application/json"}
 PING_PERIOD = 5 * 60
 
 
@@ -130,8 +129,8 @@ while True:
             "pressTimestamp": event["pressTimestamp"],
         }
         response = urequests.post(
-            base_url + "/" + credentials.device_name + "/data",
-            headers=headers,
+            BASE_URL + "/" + credentials.device_name + "/data",
+            headers=HEADERS,
             data=ujson.dumps(data),
         )
         if response.status_code == 200:
@@ -151,8 +150,8 @@ while True:
         }
         # TODO: likely to hit exceptions here..
         response = urequests.post(
-            base_url + "/" + credentials.device_name + "/ping",
-            headers=headers,
+            BASE_URL + "/" + credentials.device_name + "/ping",
+            headers=HEADERS,
             data=ujson.dumps(data),
         )
         if response.status_code == 200:

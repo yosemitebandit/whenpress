@@ -60,6 +60,32 @@ def is_radio_connected():
         return False
 
 
+def http_post(url, headers, data):
+    """Wraps urequests.post.
+
+    Returns boolean indicating success.
+    """
+    print("http post: " + str(url))
+    try:
+        response = urequests.post(
+            url,
+            headers=headers,
+            data=ujson.dumps(data),
+        )
+    except OSError as e:
+        print("http post: OSError: " + str(e))
+        return False
+    if response.status_code == 200:
+        print("http post: success")
+        return True
+    else:
+        print("http post: failed")
+        print("http post: response status code: %s" % response.status_code)
+        print("http post: response reason: %s" % response.reason)
+        print("http post: response text: %s" % response.text)
+        return False
+
+
 # Block until we have connectivity.
 while True:
     if is_radio_connected():
@@ -120,47 +146,27 @@ while True:
         print("event tx: event count: %s" % len(events))
         event = events.popleft()
         print("event tx: sending one event")
-        # TODO: likely to hit exceptions here..
-        # e.g.
-        #  - OSError: [Errno 7111] ECONNREFUSED
-        #  - OSError: [Errno 7110] ETIMEDOUT
-        data = {
-            "password": credentials.password,
-            "pressTimestamp": event["pressTimestamp"],
-        }
-        response = urequests.post(
-            BASE_URL + "/" + credentials.device_name + "/data",
+        success = http_post(
+            url=BASE_URL + "/" + credentials.device_name + "/data",
             headers=HEADERS,
-            data=ujson.dumps(data),
+            data={
+                "password": credentials.password,
+                "pressTimestamp": event["pressTimestamp"],
+            },
         )
-        if response.status_code == 200:
-            print("event tx: success")
-        else:
-            print("event tx: failed")
-            print("event tx: response status code: %s" % response.status_code)
-            print("event tx: response reason: %s" % response.reason)
-            print("event tx: response text: %s" % response.text)
+        if not success:
             events.append(event)
 
     # Periodically send a ping.
     if time.ticks_diff(time.ticks_ms(), last_ping) > (PING_PERIOD * 1000):
         print("ping: sending")
-        data = {
-            "password": credentials.password,
-        }
-        # TODO: likely to hit exceptions here..
-        response = urequests.post(
-            BASE_URL + "/" + credentials.device_name + "/ping",
+        http_post(
+            url=BASE_URL + "/" + credentials.device_name + "/ping",
             headers=HEADERS,
-            data=ujson.dumps(data),
+            data={
+                "password": credentials.password,
+            },
         )
-        if response.status_code == 200:
-            print("ping: success")
-        else:
-            print("ping: failed")
-            print("ping: response status code: %s" % response.status_code)
-            print("ping: response reason: %s" % response.reason)
-            print("ping: response text: %s" % response.text)
         last_ping = time.ticks_ms()
 
     # Pause to give the i2c bus a rest.

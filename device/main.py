@@ -63,11 +63,7 @@ def is_radio_connected():
         return False
 
 
-# Wait for connectivity.
-# The Xbee retrieves local time from the cell network.
-# Using this in isolation is not ideal --
-# we might want to record a button press before we've established connectivity.
-# TODO: leverage "time since last reset" in combination with network time.
+# Block until we have connectivity.
 while True:
     if is_radio_connected():
         print("network connection: ready.")

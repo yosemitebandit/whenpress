@@ -114,6 +114,9 @@ or from the studio: dashboard > device reset
 	- event persistence survives device reboot
 	- don't send ping if we sent events recently
 	- send battery info
+	- sleep the radio
+	- don't block upfront for connectivity
+	- don't block indefinitely for anything
 - backend/site
 	- improve timezone display on the device page
 	- can put the favicon base64 string in kv

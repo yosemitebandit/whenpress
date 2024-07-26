@@ -110,6 +110,10 @@ or from the studio: dashboard > device reset
 	  - see [here](https://github.com/sparkfun/Qwiic_Button/blob/master/Firmware/Qwiic_Button/Qwiic_Button.ino)
     - try adafruit-ampy
 	- use onboard LED to indicate overall system status
+	- use external RTC
+	- event persistence survives device reboot
+	- don't send ping if we sent events recently
+	- send battery info
 - backend/site
 	- improve timezone display on the device page
 	- can put the favicon base64 string in kv

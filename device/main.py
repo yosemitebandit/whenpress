@@ -1,14 +1,11 @@
 """WhenPress device.
 
-1. When button is pressed, store timestamp.
-2. Periodically send all stored events to cloud.
-3. Periodically send a ping to the cloud.
+Target is Sparkfun's Xbee LTE-M/NB-IOT dev kit
+with an attached Sparkfun qwiic button.
 
-potential optimizations
-- use external rtc
-- event persistence survives device reboot
-- don't send ping if we sent events recently
-- send battery info
+1. when button is pressed, store timestamp.
+2. periodically send all stored events to cloud.
+3. periodically send a ping to the cloud.
 """
 
 import time

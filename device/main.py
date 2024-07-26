@@ -47,7 +47,6 @@ time.sleep(0.1)  # Give the i2c bus a break.
 qbutton.LED_on(brightness=50)
 
 led = machine.Pin("D4", machine.Pin.OUT)
-button = machine.Pin("D0", machine.Pin.IN, machine.Pin.PULL_UP)
 
 base_url = "https://whenpress.matt-ball-2.workers.dev"
 headers = {"Content-Type": "application/json"}
@@ -97,22 +96,12 @@ qbutton_start_time = (
 # To create a more typical UTC timestamp indexed from 1970,
 # we can add the delta in seconds and the tzoffset.
 EPOCH_DIFFERENCE = 946684800 + time.tz_offset()
-button_being_pressed = False
 events = []
 last_ping = -PING_PERIOD * 1000  # init so the ping triggers on boot
 
 # Main loop.
 print("whenpress: ready.")
 while True:
-    # Check for button presses on devboard button.
-    if button.value() == 0:  # when pressed, button is pulled low
-        if not button_being_pressed:
-            events.append({"pressTimestamp": time.time() + EPOCH_DIFFERENCE})
-            button_being_pressed = True
-            led.toggle()
-    else:
-        button_being_pressed = False
-
     # Check for button presses on qwiic button.
     try:
         while not qbutton.is_clicked_queue_empty():

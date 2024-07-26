@@ -103,7 +103,6 @@ or from the studio: dashboard > device reset
 ### todos
 - device-side
 	- fix event queue handling in device code
-	- remove old button code
 	- need error handling in so many places...network and i2c are flaking out nonstop
 	- look at button's queue handling..
 	  - I think it's only 15 events max and how does it do the timing exactly

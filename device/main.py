@@ -43,9 +43,15 @@ while not qbutton.begin():
     time.sleep(5)
 ticks_since_qbutton_start = time.ticks_ms()
 print("qwiic button: ready.")
-print("qwiic button: fw version: " + str(qbutton.get_firmware_version()))
-time.sleep(0.1)  # Give the i2c bus a break.
-qbutton.LED_off()
+while True:
+    try:
+        print("qwiic button: fw version: " + str(qbutton.get_firmware_version()))
+        time.sleep(0.1)  # Give the i2c bus a break.
+        qbutton.LED_off()
+        break
+    except OSError as e:
+        print("qbutton: error: " + str(e))
+        time.sleep(0.1)
 
 BASE_URL = "https://whenpress.matt-ball-2.workers.dev"
 HEADERS = {"Content-Type": "application/json"}
@@ -125,7 +131,7 @@ last_ping = -PING_PERIOD * 1000  # init so the ping triggers on boot
 
 # Main loop.
 print("whenpress: ready.")
-print("device time: " + time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime()))
+print("device time: " + str(time.localtime()))
 while True:
     # Check for button presses on qwiic button.
     try:

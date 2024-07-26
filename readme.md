@@ -102,7 +102,6 @@ or from the studio: dashboard > device reset
 
 ### todos
 - device-side
-	- i2c error handling
 	- look at button's queue handling..
 	  - I think it's only 15 events max and how does it do the timing exactly
 	  - see [here](https://github.com/sparkfun/Qwiic_Button/blob/master/Firmware/Qwiic_Button/Qwiic_Button.ino)

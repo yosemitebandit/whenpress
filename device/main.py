@@ -8,6 +8,7 @@ with an attached Sparkfun qwiic button.
 3. periodically send a ping to the cloud.
 """
 
+import collections
 import time
 
 import machine
@@ -94,7 +95,7 @@ qbutton_start_time = (
 # To create a more typical UTC timestamp indexed from 1970,
 # we can add the delta in seconds and the tzoffset.
 EPOCH_DIFFERENCE = 946684800 + time.tz_offset()
-events = []
+events = collections.deque()
 last_ping = -PING_PERIOD * 1000  # init so the ping triggers on boot
 
 # Main loop.
@@ -114,36 +115,33 @@ while True:
     except OSError as e:
         print("qbutton: error: " + str(e))
 
-    # Transmit any events.
-    successful_indices = []
+    # Pop off events and transmit them.
+    # If transmission fails, add the event back into the queue.
     if events:
-        print("events to transmit: %s" % len(events))
-        for index, event in enumerate(events):
-            print("sending event #%s" % index)
-            data = {
-                "password": credentials.password,
-                "pressTimestamp": event["pressTimestamp"],
-            }
-            # TODO: likely to hit exceptions here..
-            # e.g.
-            #  - OSError: [Errno 7111] ECONNREFUSED
-            #  - OSError: [Errno 7110] ETIMEDOUT
-            response = urequests.post(
-                base_url + "/" + credentials.device_name + "/data",
-                headers=headers,
-                data=ujson.dumps(data),
-            )
-            if response.status_code == 200:
-                print("successfully sent event #%s" % index)
-                successful_indices.append(index)
-            else:
-                print("failed to send event #%s" % index)
-                print("response status code: %s" % response.status_code)
-                print("response reason: %s" % response.reason)
-                print("response text: %s" % response.text)
-    # Clear out events that we succesfully sent.
-    for index in successful_indices:
-        del events[index]
+        print("event tx: event count: %s" % len(events))
+        event = events.popleft()
+        print("event tx: sending one event")
+        # TODO: likely to hit exceptions here..
+        # e.g.
+        #  - OSError: [Errno 7111] ECONNREFUSED
+        #  - OSError: [Errno 7110] ETIMEDOUT
+        data = {
+            "password": credentials.password,
+            "pressTimestamp": event["pressTimestamp"],
+        }
+        response = urequests.post(
+            base_url + "/" + credentials.device_name + "/data",
+            headers=headers,
+            data=ujson.dumps(data),
+        )
+        if response.status_code == 200:
+            print("event tx: success")
+        else:
+            print("event tx: failed")
+            print("event tx: response status code: %s" % response.status_code)
+            print("event tx: response reason: %s" % response.reason)
+            print("event tx: response text: %s" % response.text)
+            events.append(event)
 
     # Periodically send a ping.
     if time.ticks_diff(time.ticks_ms(), last_ping) > (PING_PERIOD * 1000):

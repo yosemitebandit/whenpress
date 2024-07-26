@@ -118,7 +118,7 @@ or from the studio: dashboard > device reset
 	- don't block indefinitely for anything
 	- FSM
 	- test with button presses during boot
-	- OTA ??
+	- OTA - doable with Digi's "Remote Manager" product, $48/yr
 - backend/site
 	- improve timezone display on the device page
 	- there are some other small time discrepancies;

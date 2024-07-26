@@ -31,6 +31,7 @@ print(
                                /_/
       """
 )
+print("device: " + credentials.device_name)
 
 # Start qwiic button.
 # We want to init this asap so we can start capturing button presses.

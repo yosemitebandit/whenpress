@@ -108,7 +108,7 @@ or from the studio: dashboard > device reset
     - try adafruit-ampy
 	- use onboard LED to indicate overall system status
 	- use external RTC
-	- event persistence survives device reboot
+	- event persistence survives device reboot - need a separate eeprom module
 	- don't send ping if we sent events recently
 	- send battery telemetry
 	- send memory telemetry: `micropython.mem_info()`

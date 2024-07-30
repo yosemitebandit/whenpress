@@ -5,7 +5,7 @@ a small button that tracks when it has been pressed
 - uses cloudflare kv and cf workers
 
 
-### setup and using wrangler
+### running the server with wrangler
 first init some devices:
 
 ```

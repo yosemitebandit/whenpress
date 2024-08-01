@@ -134,23 +134,24 @@ and then subsequent items in the queue will be milliseconds relative to that fir
 
 ### todos
 - device-side
-	- qwiic button holds 15 events max, should we
-	- qwiic button timestamps in queue will rollover after ~30 days I think? (the millis() rollover problem)
+	- FSM
 	- handle case when http post succeeds but parsing the response fails
 	e.g. "http post: exception: list index out of range"
-	- use onboard LED to indicate overall system status
-	- event persistence survives device reboot - need a separate eeprom module
-	- don't send ping if we sent events recently
-	- send memory telemetry: `micropython.mem_info()`
-	- sleep the radio (default is "normal mode": the device will not enter sleep;
-	see the digi guides for info on micropython execution during sleep)
 	- don't block upfront for connectivity
 	- don't block indefinitely for anything
-	- FSM
-	- test with button presses during boot
-	- OTA - doable with Digi's "Remote Manager" product, $48/yr
+	- sleep the radio (default is "normal mode": the device will not enter sleep;
+	see the digi guides for info on micropython execution during sleep)
+	- use onboard LED to indicate overall system status
 	- while posting data, got in endless loop of ECONNREFUSED errors..hmm
+	- qwiic button holds 15 events max, should we buffer that further?
+	- qwiic button timestamps in queue will rollover after ~30 days I think? (the millis() rollover problem)
+	- test with button presses during boot
+	- don't send ping if we sent events recently
+	- send memory telemetry: `micropython.mem_info()`
+	- event persistence survives device reboot - need a separate eeprom module
+	- OTA - doable with Digi's "Remote Manager" product, $48/yr
 - backend/site
 	- improve timezone display on the device page
-	- can put the favicon base64 string in kv
 	- if it's already open, keep the accordion open when refreshing the page
+	- can put the favicon base64 string in kv
+    - accept multiple posted events

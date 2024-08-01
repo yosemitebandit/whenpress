@@ -1,5 +1,7 @@
 """Micropython driver for Sparkfun's QwiicRTC (RV-8803)."""
 
+import time
+
 
 class QwiicRTC(object):
     # Registers.
@@ -34,25 +36,32 @@ class QwiicRTC(object):
                 return True
         return False
 
-    def get_unix_time(self):
-        """Return a unix timestamp.
-
-        WIP.
-        """
+    def get_epoch_time(self):
+        """Return seconds since epoch."""
         # Read N bytes starting at the HUNDREDTHS register.
         # The next 8 register represent the rest of the date and time.
         [_, seconds, minutes, hours, _, date, month, year] = [
             self.bcd_to_dec(v)
             for v in self._i2c.read_block(self.address, self.HUNDREDTHS, 8)
         ]
-        print(seconds, minutes, hours, date, month, year)
-        # TODO: convert.
-        return 0
+        return time.mktime(
+            (
+                year + 2000,
+                month,
+                date,
+                hours,
+                minutes,
+                seconds,
+                0,
+                0,
+                -1,
+            )
+        )
 
     def set_time(self, seconds, minutes, hours, date, month, year):
         """Set RTC.
 
-        Hours should be in 24hr format. Year should be four digit.
+        Use GMT. Hours should be in 24hr format. Year should be four digits.
         """
         values = [
             seconds,

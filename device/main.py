@@ -61,7 +61,7 @@ while not qrtc.begin():
     print("qwiic rtc: failed to init, retrying..")
     time.sleep(5)
 print("qwiic rtc: ready")
-print(qrtc.get_unix_time())
+print("qwiic rtc: epoch time: " + str(qrtc.get_epoch_time()))
 
 BASE_URL = "https://whenpress.net"
 HEADERS = {"Content-Type": "application/json"}

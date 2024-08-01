@@ -155,6 +155,8 @@ while True:
                     )
                 }
             )
+            # Sleep to give the i2c bus a rest.
+            time.sleep(0.1)
     except OSError as e:
         print("error: " + str(e))
 

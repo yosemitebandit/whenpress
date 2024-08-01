@@ -151,6 +151,5 @@ and then subsequent items in the queue will be milliseconds relative to that fir
 	- OTA - doable with Digi's "Remote Manager" product, $48/yr
 - backend/site
 	- improve timezone display on the device page
-	- if it's already open, keep the accordion open when refreshing the page
 	- can put the favicon base64 string in kv
     - accept multiple posted events

@@ -50,7 +50,7 @@ const deviceTemplate = `
 			<kbd>{{ presses }}</kbd></p>
 			<p><kbd>Last Button Press:</kbd>
 			<kbd>{{ lastPressRelative }}</kbd></p>
-			<details>
+			<details id="accordion">
 				<summary>All Button Presses (GMT):</summary>
 				<small>
 				<ol reversed>
@@ -62,6 +62,15 @@ const deviceTemplate = `
 			</details>
       <a href="https://github.com/yosemitebandit/whenpress">source</a>
     </article>
+    <script>
+      const accordion = document.getElementById("accordion")
+      if (localStorage.getItem("accordionOpen") === "true") {
+        accordion.open = true;
+			}
+      accordion.addEventListener("toggle", () => {
+        localStorage.setItem("accordionOpen", accordion.open)
+			});
+    </script>
 	</body>
 </html>
 `;

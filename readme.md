@@ -100,6 +100,27 @@ or from the studio: dashboard > device reset
 - go to micropython terminal in left pane and view debug output
 
 
+### device RTC
+- you need to set the RTC, here is one way via the micropython repl:
+
+```
+>>> import micropython_i2c, qwiic_rtc
+>> i2cd = micropython_i2c.MicroPythonI2C()
+>>> qrtc = qwiic_rtc.QwiicRTC(address=0x32, i2c_driver=i2cd)
+>>> qrtc.set_time(
+  seconds=22,
+  minutes=53,
+  hours=20,
+  date=31,
+  month=7,
+  year=2024,
+)
+```
+
+- note: you need to use 24hr time format for the hours field
+- TODO: weekday is not behaving how I would expect when reading from the RTC
+
+
 ### todos
 - device-side
 	- look at button's queue handling..

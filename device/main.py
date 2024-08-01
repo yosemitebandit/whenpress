@@ -18,6 +18,7 @@ import usocket
 import credentials
 import micropython_i2c
 import qwiic_button
+import qwiic_rtc
 import urequests
 
 
@@ -52,6 +53,15 @@ while True:
     except OSError as e:
         print("qbutton: error: " + str(e))
         time.sleep(0.1)
+
+# Start the Qwiic RTC.
+qrtc = qwiic_rtc.QwiicRTC(address=0x32, i2c_driver=xbee_mp_driver)
+print("qwiic rtc: starting")
+while not qrtc.begin():
+    print("qwiic rtc: failed to init, retrying..")
+    time.sleep(5)
+print("qwiic rtc: ready")
+print(qrtc.get_unix_time())
 
 BASE_URL = "https://whenpress.net"
 HEADERS = {"Content-Type": "application/json"}

@@ -121,6 +121,14 @@ or from the studio: dashboard > device reset
 - TODO: weekday is not behaving how I would expect when reading from the RTC
 
 
+### device button
+- for the Qwiic button, there is a 15-item queue maintained by the button itself.
+- based on [the firmware](https://github.com/sparkfun/Qwiic_Button/blob/e89a82fe2ddb293bfe0d6d9f63ccf4782a77c359/Firmware/Qwiic_Button/interrupts.ino#L113),
+the queue will have `millis()` inside it.
+At one point I was confused if these were relative times or what..but it's just time-since-boot
+- (in fact there are two queues: "pressed" and "clicked," but we'll just focus on "clicked")
+
+
 ### todos
 - device-side
 	- look at button's queue handling..

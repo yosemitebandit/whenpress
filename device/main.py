@@ -151,15 +151,21 @@ while True:
             # TODO: is there a better way to handle the queue times? E.g. if
             # we accumulate presses while we are stuck transmitting.
             # In most cases this will be fine, we won't be stuck long.
-            et = qrtc.get_epoch_time()
-            print("et: " + str(et))
-            qv = qbutton.pop_clicked_queue()
-            print("qv: " + str(qv))
-            pts = sum((et, qv / 1000.0, EPOCH_DIFFERENCE))
-            print("pts: " + str(pts))
-            events.append({"pressTimestamp": pts})
+            # Ensure that we're dealing with ints; the xbee's micropython
+            # fp math was surprising!
+            events.append(
+                {
+                    "pressTimestamp": sum(
+                        (
+                            int(qrtc.get_epoch_time()),
+                            int(qbutton.pop_clicked_queue() / 1000.0),
+                            EPOCH_DIFFERENCE,
+                        )
+                    )
+                }
+            )
     except OSError as e:
-        print("qbutton: error: " + str(e))
+        print("error: " + str(e))
 
     # Pop off events and transmit them.
     # If transmission fails, add the event back into the queue.

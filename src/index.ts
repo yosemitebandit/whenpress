@@ -2,6 +2,7 @@ import { Context, Hono } from 'hono';
 import bcrypt from 'bcryptjs';
 import mustache from 'mustache';
 import moment from 'moment';
+import 'moment-timezone';
 
 type Bindings = {
 	DB: KVNamespace;
@@ -119,7 +120,7 @@ async function checkAuth(c: Context, next: () => Promise<void>) {
 function formatDeviceDataToRelativeTimes(deviceData: DeviceData): string[] {
 	const reversedData = deviceData.events.slice().reverse();
 	return reversedData.map((entry) => {
-		const pressMoment = moment.unix(entry.pressTimestamp);
+		const pressMoment = moment.unix(entry.pressTimestamp).tz('America/Los_Angeles');
 		const formattedDateTime = pressMoment.format('ddd MMM D, YYYY h:mmA');
 		const relativeTime = pressMoment.fromNow();
 		return `${formattedDateTime} (${relativeTime})`;

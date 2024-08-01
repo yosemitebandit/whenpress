@@ -112,6 +112,7 @@ while True:
 # Wait for clock setup.
 # I believe the cell modem needs to connect and bootstrap the Xbee's clock.
 # The time.tz_offset method fails unless you wait about 15s after boot.
+# TODO: could remove this as we no longer need tz_offset
 while True:
     try:
         time.tz_offset()

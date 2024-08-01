@@ -60,7 +60,7 @@ const deviceTemplate = `
 			<p><kbd>Last Button Press:</kbd>
 			<kbd>{{ lastPressRelative }}</kbd></p>
 			<details id="accordion">
-				<summary>All Button Presses (GMT):</summary>
+				<summary>All Button Presses (PT):</summary>
 				<small>
 				<ol reversed>
 					{{ #allPresses }}

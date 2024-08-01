@@ -150,6 +150,7 @@ and then subsequent items in the queue will be milliseconds relative to that fir
 	- FSM
 	- test with button presses during boot
 	- OTA - doable with Digi's "Remote Manager" product, $48/yr
+	- while posting data, got in endless loop of ECONNREFUSED errors..hmm
 - backend/site
 	- improve timezone display on the device page
 	- there are some other small time discrepancies;

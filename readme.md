@@ -131,9 +131,8 @@ At one point I was confused if these were relative times or what..but it's just 
 
 ### todos
 - device-side
-	- look at button's queue handling..
-	  - I think it's only 15 events max and how does it do the timing exactly
-	  - see [here](https://github.com/sparkfun/Qwiic_Button/blob/master/Firmware/Qwiic_Button/Qwiic_Button.ino)
+	- qwiic button holds 15 events max, should we
+	- qwiic button timestamps in queue will rollover after ~30 days I think? (the millis() rollover problem)
     - try adafruit-ampy
 	- use onboard LED to indicate overall system status
 	- use external RTC

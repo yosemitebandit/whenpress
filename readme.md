@@ -123,16 +123,22 @@ or from the studio: dashboard > device reset
 
 ### device button
 - for the Qwiic button, there is a 15-item queue maintained by the button itself.
-- based on [the firmware](https://github.com/sparkfun/Qwiic_Button/blob/e89a82fe2ddb293bfe0d6d9f63ccf4782a77c359/Firmware/Qwiic_Button/interrupts.ino#L113),
-the queue will have `millis()` inside it.
-At one point I was confused if these were relative times or what..but it's just time-since-boot
-- (in fact there are two queues: "pressed" and "clicked," but we'll just focus on "clicked")
+- I thought that the queue would have `millis()` calls inside it (time since boot),
+that was based on [the firmware](https://github.com/sparkfun/Qwiic_Button/blob/e89a82fe2ddb293bfe0d6d9f63ccf4782a77c359/Firmware/Qwiic_Button/interrupts.ino#L113),
+but it doesn't seem to be the case.
+- It seems to have relative times, like the first press will store a near-zero second value
+and then subsequent items in the queue will be milliseconds relative to that first press.
+- And so then as you pop off values, these relative timings change..
+- (and btw there are two queues: "pressed" and "clicked," but we'll just focus on "clicked")
 
 
 ### todos
 - device-side
 	- qwiic button holds 15 events max, should we
 	- qwiic button timestamps in queue will rollover after ~30 days I think? (the millis() rollover problem)
+	- switch to using pressed queue instead of clicked
+	- handle case when http post succeeds but parsing the response fails
+	e.g. "http post: exception: list index out of range"
 	- use onboard LED to indicate overall system status
 	- event persistence survives device reboot - need a separate eeprom module
 	- don't send ping if we sent events recently

@@ -133,12 +133,9 @@ At one point I was confused if these were relative times or what..but it's just 
 - device-side
 	- qwiic button holds 15 events max, should we
 	- qwiic button timestamps in queue will rollover after ~30 days I think? (the millis() rollover problem)
-    - try adafruit-ampy
 	- use onboard LED to indicate overall system status
-	- use external RTC
 	- event persistence survives device reboot - need a separate eeprom module
 	- don't send ping if we sent events recently
-	- send battery telemetry
 	- send memory telemetry: `micropython.mem_info()`
 	- sleep the radio (default is "normal mode": the device will not enter sleep;
 	see the digi guides for info on micropython execution during sleep)

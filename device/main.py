@@ -37,8 +37,8 @@ print("device: " + credentials.device_name)
 
 # Start qwiic button.
 # Init this asap so we can start capturing button presses.
-xbee_mp_driver = micropython_i2c.MicroPythonI2C()
-qbutton = qwiic_button.QwiicButton(address=None, i2c_driver=xbee_mp_driver)
+i2c_driver = micropython_i2c.MicroPythonI2C()
+qbutton = qwiic_button.QwiicButton(address=None, i2c_driver=i2c_driver)
 print("qwiic button: starting.")
 while not qbutton.begin():
     print("qwiic button: failed to init, retrying..")
@@ -55,7 +55,7 @@ while True:
         time.sleep(0.1)
 
 # Start the Qwiic RTC.
-qrtc = qwiic_rtc.QwiicRTC(address=0x32, i2c_driver=xbee_mp_driver)
+qrtc = qwiic_rtc.QwiicRTC(address=0x32, i2c_driver=i2c_driver)
 print("qwiic rtc: starting")
 while not qrtc.begin():
     print("qwiic rtc: failed to init, retrying..")

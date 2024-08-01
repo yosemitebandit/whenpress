@@ -133,14 +133,16 @@ last_ping = -PING_PERIOD * 1000  # init so the ping triggers on boot
 print("device: ready.")
 print("device: starting main loop.")
 while True:
-    # Check for button presses on qwiic button.
+    # Check for button presses on the Qwiic button.
+    # Technically we're going to use the click queue (press down and release).
+    # I am getting duplicate events when I use the press queue.
     try:
-        while not qbutton.is_pressed_queue_empty():
+        while not qbutton.is_clicked_queue_empty():
             # The button's queue has millisecond values in it. After some
             # testing, this is the time relative to the first time in the
             # queue. Unfortunately it's not the time since boot.
             # TODO: is there a better way to handle the queue times? E.g. if
-            # we accumulate presses while we are stuck transmitting.
+            # we accumulate clicks while we are stuck transmitting.
             # In most cases this will be fine, we won't be stuck long.
             # Also ensure that we're dealing with ints; the xbee's micropython
             # fp math was surprising!
@@ -149,7 +151,7 @@ while True:
                     "pressTimestamp": sum(
                         (
                             int(qrtc.get_epoch_time()),
-                            int(qbutton.pop_pressed_queue() / 1000.0),
+                            int(qbutton.pop_clicked_queue() / 1000.0),
                             EPOCH_DIFFERENCE,
                         )
                     )

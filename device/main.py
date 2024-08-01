@@ -11,7 +11,6 @@ and a Sparkfun qwiic RTC.
 
 import time
 
-import machine
 import ujson
 import usocket
 

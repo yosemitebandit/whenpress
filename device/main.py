@@ -163,7 +163,6 @@ while True:
         print("error: " + str(e))
 
     # Pop off individual events and transmit them.
-    # If transmission fails, add the event back into the queue.
     if events:
         print("event tx: event count: %s" % len(events))
         event = events.pop(0)
@@ -176,7 +175,13 @@ while True:
                 "pressTimestamp": event["pressTimestamp"],
             },
         )
-        if not success:
+
+        # If transmission succeeds, bump the ping timer:
+        # the tx indicates we have good connectivity.
+        # If it fails, add the event back into the queue.
+        if success:
+            last_ping = time.ticks_ms()
+        else:
             events.append(event)
 
     # Periodically send a ping.

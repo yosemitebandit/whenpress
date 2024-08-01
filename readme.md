@@ -146,7 +146,6 @@ and then subsequent items in the queue will be milliseconds relative to that fir
 	- qwiic button holds 15 events max, should we buffer that further?
 	- qwiic button timestamps in queue will rollover after ~30 days I think? (the millis() rollover problem)
 	- test with button presses during boot
-	- don't send ping if we sent events recently
 	- send memory telemetry: `micropython.mem_info()`
 	- event persistence survives device reboot - need a separate eeprom module
 	- OTA - doable with Digi's "Remote Manager" product, $48/yr

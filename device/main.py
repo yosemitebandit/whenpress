@@ -61,7 +61,6 @@ while not qrtc.begin():
     print("qwiic rtc: failed to init, retrying..")
     time.sleep(5)
 print("qwiic rtc: ready")
-print("qwiic rtc: epoch time: " + str(qrtc.get_epoch_time()))
 
 BASE_URL = "https://whenpress.net"
 HEADERS = {"Content-Type": "application/json"}
@@ -134,8 +133,8 @@ qbutton_start_time = (
 
 # Xbee uses 1/1/2000 as epoch start instead of 1/1/1970.
 # To create a more typical UTC timestamp indexed from 1970,
-# we can add the delta in seconds and the tzoffset.
-EPOCH_DIFFERENCE = 946684800 + time.tz_offset()
+# we can add the delta in seconds.
+EPOCH_DIFFERENCE = 946684800
 events = []
 last_ping = -PING_PERIOD * 1000  # init so the ping triggers on boot
 
@@ -146,14 +145,19 @@ while True:
     # Check for button presses on qwiic button.
     try:
         while not qbutton.is_clicked_queue_empty():
-            qbutton_timer_value = qbutton.pop_clicked_queue() / 1000.0
-            events.append(
-                {
-                    "pressTimestamp": (
-                        qbutton_start_time + qbutton_timer_value + EPOCH_DIFFERENCE
-                    )
-                }
-            )
+            # The button's queue has millisecond values in it. After some
+            # testing, this is the time relative to the first time in the
+            # queue. Unfortunately it's not the time since boot.
+            # TODO: is there a better way to handle the queue times? E.g. if
+            # we accumulate presses while we are stuck transmitting.
+            # In most cases this will be fine, we won't be stuck long.
+            et = qrtc.get_epoch_time()
+            print("et: " + str(et))
+            qv = qbutton.pop_clicked_queue()
+            print("qv: " + str(qv))
+            pts = sum((et, qv / 1000.0, EPOCH_DIFFERENCE))
+            print("pts: " + str(pts))
+            events.append({"pressTimestamp": pts})
     except OSError as e:
         print("qbutton: error: " + str(e))
 

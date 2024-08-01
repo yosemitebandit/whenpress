@@ -155,3 +155,4 @@ and then subsequent items in the queue will be milliseconds relative to that fir
 	- there are some other small time discrepancies;
 	like button presses that come in from a few minutes in the future
 	- can put the favicon base64 string in kv
+	- if it's already open, keep the accordion open when refreshing the page

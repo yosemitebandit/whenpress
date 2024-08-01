@@ -130,7 +130,8 @@ events = []
 last_ping = -PING_PERIOD * 1000  # init so the ping triggers on boot
 
 # Main loop.
-print("whenpress: ready.")
+print("device: ready.")
+print("device: starting main loop.")
 while True:
     # Check for button presses on qwiic button.
     try:

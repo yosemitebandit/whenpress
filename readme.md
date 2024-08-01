@@ -136,7 +136,6 @@ and then subsequent items in the queue will be milliseconds relative to that fir
 - device-side
 	- qwiic button holds 15 events max, should we
 	- qwiic button timestamps in queue will rollover after ~30 days I think? (the millis() rollover problem)
-	- switch to using pressed queue instead of clicked
 	- handle case when http post succeeds but parsing the response fails
 	e.g. "http post: exception: list index out of range"
 	- use onboard LED to indicate overall system status

@@ -135,7 +135,7 @@ print("device: starting main loop.")
 while True:
     # Check for button presses on qwiic button.
     try:
-        while not qbutton.is_clicked_queue_empty():
+        while not qbutton.is_pressed_queue_empty():
             # The button's queue has millisecond values in it. After some
             # testing, this is the time relative to the first time in the
             # queue. Unfortunately it's not the time since boot.
@@ -149,7 +149,7 @@ while True:
                     "pressTimestamp": sum(
                         (
                             int(qrtc.get_epoch_time()),
-                            int(qbutton.pop_clicked_queue() / 1000.0),
+                            int(qbutton.pop_pressed_queue() / 1000.0),
                             EPOCH_DIFFERENCE,
                         )
                     )

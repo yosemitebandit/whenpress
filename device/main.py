@@ -1,7 +1,8 @@
 """WhenPress device.
 
 Target is Sparkfun's Xbee LTE-M/NB-IOT dev kit
-with an attached Sparkfun qwiic button.
+with an attached Sparkfun qwiic button
+and a Sparkfun qwiic RTC.
 
 1. when button is pressed, store timestamp.
 2. periodically send all stored events to cloud.
@@ -35,7 +36,7 @@ print(
 print("device: " + credentials.device_name)
 
 # Start qwiic button.
-# We want to init this asap so we can start capturing button presses.
+# Init this asap so we can start capturing button presses.
 xbee_mp_driver = micropython_i2c.MicroPythonI2C()
 qbutton = qwiic_button.QwiicButton(address=None, i2c_driver=xbee_mp_driver)
 print("qwiic button: starting.")
@@ -167,7 +168,7 @@ while True:
     except OSError as e:
         print("error: " + str(e))
 
-    # Pop off events and transmit them.
+    # Pop off individual events and transmit them.
     # If transmission fails, add the event back into the queue.
     if events:
         print("event tx: event count: %s" % len(events))

@@ -142,7 +142,7 @@ while True:
             # TODO: is there a better way to handle the queue times? E.g. if
             # we accumulate presses while we are stuck transmitting.
             # In most cases this will be fine, we won't be stuck long.
-            # Ensure that we're dealing with ints; the xbee's micropython
+            # Also ensure that we're dealing with ints; the xbee's micropython
             # fp math was surprising!
             events.append(
                 {

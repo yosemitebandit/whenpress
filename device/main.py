@@ -43,7 +43,6 @@ print("qwiic button: starting.")
 while not qbutton.begin():
     print("qwiic button: failed to init, retrying..")
     time.sleep(5)
-ticks_since_qbutton_start = time.ticks_ms()
 print("qwiic button: ready.")
 while True:
     try:
@@ -122,15 +121,6 @@ while True:
     except OSError:
         print("clock bootstrap: waiting..")
         time.sleep(5)
-
-# Determine the qbutton start timestamp.
-# Now that the cell radio has provided localtime, we can convert from time-since-boot to time-since epoch.
-ticks_since_boot = time.ticks_ms()
-qbutton_start_time = (
-    time.mktime(time.localtime())
-    - ticks_since_boot / 1000.0
-    + ticks_since_qbutton_start / 1000.0
-)
 
 # Xbee uses 1/1/2000 as epoch start instead of 1/1/1970.
 # To create a more typical UTC timestamp indexed from 1970,

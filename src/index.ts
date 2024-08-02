@@ -60,7 +60,7 @@ const deviceTemplate = `
 			<p><kbd>Last Button Press:</kbd>
 			<kbd>{{ lastPressRelative }}</kbd></p>
 			<details id="accordion">
-				<summary>All Button Presses (PT):</summary>
+				<summary>All Button Presses ({{ tzShortName }}):</summary>
 				<small>
 				<ol reversed>
 					{{ #allPresses }}
@@ -165,6 +165,7 @@ app.get('/:device', async (c: Context) => {
 			presses: jsonData.events.length,
 			lastPressRelative: moment(lastPressTime).fromNow(),
 			allPresses: allPresses,
+			tzShortName: moment().tz(clientTimezone).format('z'),
 		};
 	}
 	// Lookup ping data to help determine if device is online.

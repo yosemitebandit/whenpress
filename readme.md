@@ -52,6 +52,14 @@ $ curl -X POST \
 http://localhost:8787/epona/data
 ```
 
+add the favicon (base64 encoded)
+```
+$ npx wrangler \
+kv key put \
+"site:favicon" 'iVBOR ...' \
+--binding=DB --local
+```
+
 deploy
 ```
 npx wrangler deploy
@@ -65,6 +73,7 @@ visit `http://localhost:8787/epona` to see the latest data
 - auth:DEVICE1 -> "PW1" (string)
 - data:DEVICE1 -> "{DEVICEDATA1}" (string, json-compatible)
 - ping:DEVICE1 -> "UTC timestamp" (string; int compatible)
+- site:favicon -> "iVBOR..." (string)
 
 
 ### ts testing
@@ -151,5 +160,4 @@ and then subsequent items in the queue will be milliseconds relative to that fir
 	- event persistence survives device reboot - need a separate eeprom module
 	- OTA - doable with Digi's "Remote Manager" product, $48/yr
 - backend/site
-	- can put the favicon base64 string in kv
     - accept multiple posted events

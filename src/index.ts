@@ -117,10 +117,10 @@ async function checkAuth(c: Context, next: () => Promise<void>) {
 	await next();
 }
 
-function formatDeviceDataToRelativeTimes(deviceData: DeviceData): string[] {
+function formatDeviceDataToRelativeTimes(deviceData: DeviceData, timezone): string[] {
 	const reversedData = deviceData.events.slice().reverse();
 	return reversedData.map((entry) => {
-		const pressMoment = moment.unix(entry.pressTimestamp).tz('America/Los_Angeles');
+		const pressMoment = moment.unix(entry.pressTimestamp).tz(timezone);
 		const formattedDateTime = pressMoment.format('ddd MMM D, YYYY h:mmA');
 		const relativeTime = pressMoment.fromNow();
 		return `${formattedDateTime} (${relativeTime})`;
@@ -135,7 +135,7 @@ app.get('/', async (c) => {
 });
 
 app.use('/:device', deviceExistsMiddleware);
-app.get('/:device', async (c) => {
+app.get('/:device', async (c: Context) => {
 	/* Render page for a specific device.
 	 */
 	const deviceName = c.req.param('device');
@@ -153,7 +153,9 @@ app.get('/:device', async (c) => {
 	let deviceData = await c.env.DB.get(`data:${deviceName}`);
 	if (deviceData != null) {
 		let jsonData: DeviceData = JSON.parse(deviceData);
-		const allPresses = formatDeviceDataToRelativeTimes(jsonData);
+		// Attempt to ascertain the client's TZ.
+		const clientTimezone = c.req.raw.cf?.timezone || 'Etc/GMT';
+		const allPresses = formatDeviceDataToRelativeTimes(jsonData, clientTimezone);
 		const lastPress = Math.max(...jsonData.events.map((event: EventData) => event.pressTimestamp));
 		lastActive = lastPress;
 		const lastPressTime = moment.unix(lastPress);

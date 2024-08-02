@@ -141,6 +141,7 @@ and then subsequent items in the queue will be milliseconds relative to that fir
 	- don't block indefinitely for anything
 	- sleep the radio (default is "normal mode": the device will not enter sleep;
 	see the digi guides for info on micropython execution during sleep)
+	- serial print logging with times
 	- use onboard LED to indicate overall system status
 	- while posting data, got in endless loop of ECONNREFUSED errors..hmm
 	- qwiic button holds 15 events max, should we buffer that further?
